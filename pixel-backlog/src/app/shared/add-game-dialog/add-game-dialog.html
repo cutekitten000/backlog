@@ -1,1 +1,96 @@
-<p>add-game-dialog works!</p>
+<!-- src/app/shared/add-game-dialog/add-game-dialog.html -->
+
+<div class="dialog-overlay" (click)="close.emit()">
+  <div class="dialog-panel" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="close.emit()">
+      <i class="material-symbols-outlined">close</i>
+    </button>
+    <h2 class="dialog-title">Consagrar Nova Jornada</h2>
+
+    <!-- Vista de Busca: Aparece primeiro -->
+    @if (!selectedGame) {
+      <div class="search-section">
+        <input
+          #searchInput
+          type="text"
+          class="form-input"
+          placeholder="Procurar o nome do jogo..."
+          (keyup)="search(searchInput.value)"
+          autocomplete="off"
+        >
+
+        <!-- Mensagem de erro para jogos duplicados -->
+        @if (isDuplicate) {
+          <p class="error-message">Este penitente já iniciou a sua jornada.</p>
+        }
+
+        @if (isSearching) { <p class="search-status">Procurando nos anais...</p> }
+        <ul class="results-list">
+          @for (game of (searchResults$ | async)?.results; track game.id) {
+            <li class="result-item" (click)="selectGame(game)">
+              <img [src]="game.background_image" alt="Capa de {{game.name}}" class="result-cover" onerror="this.style.display='none'">
+              <span>{{ game.name }}</span>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    <!-- Vista de Formulário: Aparece após selecionar um jogo -->
+    @if (selectedGame) {
+      <form [formGroup]="gameForm" (ngSubmit)="onSubmit()" class="game-form">
+        <div class="form-header">
+          <img [src]="selectedGame.background_image" alt="Capa de {{selectedGame.name}}" class="selected-game-cover">
+          <h3>{{ selectedGame.name }}</h3>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label>Status</label>
+            <select formControlName="status" class="form-input">
+              @for (status of statuses; track status) { <option [value]="status">{{ status }}</option> }
+            </select>
+          </div>
+          <div class="form-field">
+             <label>Plataforma</label>
+             <select formControlName="platforms" class="form-input" multiple>
+               @for (platform of platforms; track platform) { <option [value]="platform">{{ platform }}</option> }
+             </select>
+             <small>Segure Ctrl/Cmd para selecionar várias</small>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="playtime">Tempo de Jogo (ex: 120h)</label>
+          <input id="playtime" type="text" formControlName="playtime" class="form-input">
+        </div>
+
+        <div class="form-row">
+            <div class="form-field">
+              <label for="startDate">Data de Início</label>
+              <input id="startDate" type="date" formControlName="startDate" class="form-input">
+            </div>
+            <div class="form-field">
+              <label for="finishDate">Data de Fim</label>
+              <input id="finishDate" type="date" formControlName="finishDate" class="form-input">
+            </div>
+        </div>
+
+        <div class="form-row checkboxes">
+           <label class="checkbox-label">
+             <input type="checkbox" formControlName="isPlatinado">
+             <span class="checkbox-custom"></span>
+             <span>Platinado</span>
+           </label>
+           <label class="checkbox-label">
+             <input type="checkbox" formControlName="willPlatinar">
+             <span class="checkbox-custom"></span>
+             <span>Vou Platinar</span>
+           </label>
+        </div>
+
+        <button type="submit" class="submit-btn" [disabled]="gameForm.invalid">Adicionar</button>
+      </form>
+    }
+  </div>
+</div>

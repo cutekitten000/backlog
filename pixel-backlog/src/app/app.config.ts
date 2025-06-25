@@ -3,6 +3,7 @@
 import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideHttpClient } from '@angular/common/http'; // 1. IMPORTE O NOVO PROVEDOR
 
 import { routes } from './app.routes';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
@@ -15,6 +16,7 @@ export const appConfig: ApplicationConfig = {
     // ADICIONE ESTAS DUAS LINHAS IMPORTANTES AQUI:
     provideRouter(routes),
     provideAnimations(), // Necessário para as animações que pediu
+    provideHttpClient(),
 
     // As suas configurações do Firebase continuam aqui:
     provideFirebaseApp(() => initializeApp(environment.firebase)),

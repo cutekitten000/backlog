@@ -1,0 +1,257 @@
+/* src/app/shared/add-game-dialog/add-game-dialog.scss */
+
+:host {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.dialog-overlay {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.dialog-panel {
+  width: 90%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  padding: 3rem;
+  background: var(--color-ui-bg);
+  border: 1px solid var(--color-border);
+  backdrop-filter: blur(8px);
+}
+
+.close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: var(--color-grace-hover);
+    transform: scale(1.2);
+  }
+}
+
+.dialog-title {
+  text-align: center;
+  color: var(--color-text-faded);
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Estilos da Busca */
+.search-section .form-input {
+  margin-bottom: 1rem;
+}
+
+.search-status {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.results-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+}
+
+.result-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-border);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.result-cover {
+  width: 100px;
+  height: 56px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+
+/* Estilos do Formulário */
+.form-header {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  h3 {
+    font-size: 1.8rem;
+    color: var(--color-grace-hover);
+    margin-top: 1rem;
+  }
+}
+
+.selected-game-cover {
+  max-width: 100%;
+  border: 1px solid var(--color-border);
+}
+
+.game-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.form-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  label {
+    margin-bottom: 0.8rem;
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+  }
+
+  small {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin-top: 0.4rem;
+  }
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-faded);
+  font-family: inherit;
+  font-size: 1.2rem;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-grace-hover);
+    background: rgba(0, 0, 0, 0.3);
+  }
+}
+
+input[type="date"].form-input {
+  &::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(0.6) sepia(0.5) saturate(5) hue-rotate(350deg);
+  }
+}
+
+select.form-input {
+  color: var(--color-text-faded);
+
+  option {
+    padding: 0.5rem;
+    background: #1c1c20;
+    color: var(--color-text-faded);
+  }
+}
+
+select.form-input[multiple] {
+  height: 150px;
+  padding: 0.5rem;
+}
+
+.checkboxes {
+  justify-content: center;
+  gap: 2rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: var(--color-text-faded);
+  cursor: pointer;
+  font-size: 1.1rem;
+
+  input[type="checkbox"] {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .checkbox-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--color-border);
+    display: inline-block;
+    position: relative;
+    transition: all 0.2s ease;
+  }
+
+  input[type="checkbox"]:checked + .checkbox-custom {
+    border-color: var(--color-ember-active);
+    background-color: var(--color-ember-active);
+    box-shadow: 0 0 10px 0 var(--color-ember-active);
+  }
+}
+
+.submit-btn {
+  padding: 1rem;
+  margin-top: 1rem;
+  background: transparent;
+  border: 1px solid var(--color-grace-hover);
+  color: var(--color-grace-hover);
+  font-family: inherit;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:disabled {
+    border-color: var(--color-border);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  &:not(:disabled):hover {
+    background: var(--color-ember-active);
+    border-color: var(--color-ember-active);
+    color: #000;
+    box-shadow: 0 0 15px 0px var(--color-ember-active);
+  }
+}
+
+.error-message {
+  color: var(--color-ember-active);
+  text-align: center;
+  margin: 1rem 0;
+  font-size: 1.1rem;
+  border: 1px dashed var(--color-ember-active);
+  padding: 0.8rem;
+}
