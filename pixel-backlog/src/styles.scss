@@ -1,19 +1,45 @@
 /* src/styles.scss */
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
-body {
-  background-color: #212529;
-  color: red; /* Cor de fundo escura */
-  font-family: 'Press Start 2P', cursive;
-  image-rendering: pixelated; /* Garante que as imagens não fiquem borradas ao escalar */
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+/* 1. PALETA DE CORES "MILAGRE SOMBRIO" */
+:root {
+  --color-ui-bg: rgba(28, 28, 32, 0.65);     // Fundo dos painéis, mais escuro e neutro
+  --color-border: #4a4a4a;                   // Borda de pedra fria
+  --color-text-faded: #b8b8b8;              // O nosso "branco" principal, desbotado
+  --color-text-muted: #7a7a7a;               // Texto secundário, quase um sussurro
+  --color-ember-active: #ff8a00;             // Laranja brasa para o estado ativo
+  --color-grace-hover: #e0b43a;              // Dourado da graça para o hover
 }
 
-/* Animação de fade-in global */
+body {
+  // O GIF como um fundo fixo que cobre tudo
+  background-image: url('https://i.pinimg.com/originals/fb/5b/48/fb5b48cd0d259376d6fcd35ab8404cbf.gif');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+
+  color: var(--color-sacred-glow);
+  font-family: 'VT323', monospace;
+  font-size: 1.4rem;
+  overflow-x: hidden;
+  position: relative; // Essencial para a sobreposição
+
+  // SOBREPOSIÇÃO ESCURA: Garante a legibilidade do texto sobre o GIF
+  &::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 12, 25, 0.6); // Uma película escura
+    z-index: -1; // Fica entre o body e o conteúdo
+  }
+}
+
+// Animação global
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-.fade-in {
-  animation: fadeIn 0.5s ease-in-out forwards;
 }

@@ -1,106 +1,119 @@
-:host {
-  display: block;
-  padding: 1rem;
-}
+/* src/app/features/dashboard/dashboard.scss */
 
-// Estilo para a sobreposição do diálogo
-.dialog-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.75);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  padding: 1rem;
-}
-
-.dashboard-container {
-  max-width: 1200px;
-  margin: 0 auto;
+.sanctuary-container {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  align-items: center;
+  padding: 2rem;
+  min-height: 100vh;
+  animation: fadeIn 1s ease-out;
 }
 
-.dashboard-header {
-  padding: 1rem 2rem;
+/* CABEÇALHO E TÍTULO */
+.sanctuary-header {
+  width: 100%;
+  max-width: 1400px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap; // Permite quebrar linha em telas menores
+  margin-bottom: 4rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-border);
 
-  .header-content {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      color: #fff;
-      text-shadow: 2px 2px #000;
-    }
+  .title {
+    font-size: 2.5rem;
+    letter-spacing: 5px;
+    color: var(--color-text-faded); // Cor de texto principal
+    text-shadow: 2px 2px 5px #000;
   }
 }
 
-.controls-section {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  align-items: center;
+/* BOTÕES, AGORA COMO SINAIS DESBOTADOS */
+.rune-btn {
+  background: transparent;
+  color: var(--color-text-muted); // Começa apagado
+  border: 1px solid var(--color-border);
+  padding: 0.7rem 1.5rem;
+  font-family: inherit;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: var(--color-grace-hover); // Acende com a graça no hover
+    border-color: var(--color-grace-hover);
+    text-shadow: 0 0 8px var(--color-grace-hover);
+  }
+
+  &.is-active {
+    color: #000; // Texto preto para contraste
+    background-color: var(--color-ember-active); // Fica em brasa quando ativo
+    border-color: var(--color-ember-active);
+    box-shadow: 0 0 15px 0px var(--color-ember-active);
+    text-shadow: none;
+  }
 }
 
+/* FILTROS */
 .filters-container {
-  width: 100%;
-  .filters-title {
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-  .filter-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    justify-content: center;
-  }
+  margin-bottom: 4rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
+/* LISTA DE JOGOS E CARTÕES */
 .game-list-section {
   width: 100%;
+  max-width: 1400px;
 }
 
 .game-list {
   display: grid;
-  // Grid responsivo
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 2rem;
+}
+
+.game-card {
+  background: var(--color-ui-bg);
+  border: 1px solid var(--color-border);
+  padding: 1.5rem;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+  text-align: left;
+
+  &:hover {
+    border-color: var(--color-grace-hover);
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  }
+
+  h3 {
+    color: var(--color-text-faded); // Título com o branco desbotado
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+  p {
+    color: var(--color-text-muted); // Status com o cinza sussurrado
+    font-size: 1.2rem;
+  }
+}
+
+/* BOTÃO DE ADICIONAR E ESTADO VAZIO */
+.add-button-container {
+  margin-bottom: 2rem;
+  text-align: center;
 }
 
 .empty-state {
-  grid-column: 1 / -1; // Ocupa a largura total do grid
-  padding: 2rem;
-  p {
-    margin-bottom: 1rem;
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-}
-
-// Media queries para responsividade
-@media (max-width: 768px) {
-  .dashboard-header {
-    flex-direction: column;
-    gap: 1.5rem;
-    .header-content h1 {
-      font-size: 1.2rem;
-    }
-  }
-
-  .filter-buttons .nes-btn {
-    flex-grow: 1;
-  }
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem;
+  color: var(--color-text-muted);
+  border: 1px dashed var(--color-border);
+  line-height: 2;
+  font-size: 1.3rem;
+  background: var(--color-ui-bg);
+  backdrop-filter: blur(5px);
 }

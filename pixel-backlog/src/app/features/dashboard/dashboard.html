@@ -1,82 +1,48 @@
-<!-- O diálogo para adicionar um novo jogo fica por cima de tudo quando ativo -->
-@if (isAddDialogOpen) {
-  <!-- Adicione o seu componente de diálogo aqui -->
-  <!-- <app-add-game-dialog (close)="closeAddDialog()"></app-add-game-dialog> -->
+<!-- src/app/features/dashboard/dashboard.html -->
 
-  <!-- Placeholder temporário para o diálogo -->
-  <div class="dialog-overlay">
-    <div class="nes-dialog is-dark is-rounded fade-in" id="dialog-default">
-      <form method="dialog">
-        <p class="title">Adicionar Jogo</p>
-        <p>O componente do formulário de adição virá aqui.</p>
-        <menu class="dialog-menu">
-          <button class="nes-btn" (click)="closeAddDialog()">Cancelar</button>
-          <button class="nes-btn is-primary">Confirmar</button>
-        </menu>
-      </form>
-    </div>
-  </div>
-}
+<div class="sanctuary-container">
 
-<div class="dashboard-container">
-  <!-- Cabeçalho -->
-  <header class="dashboard-header nes-container is-dark is-rounded">
-    <div class="header-content">
-      <i class="nes-icon is-large star"></i>
-      <h1>Pixel Backlog</h1>
-      <i class="nes-icon is-large star"></i>
-    </div>
-    <button type="button" class="nes-btn is-error" (click)="authService.logout()">Logout</button>
+  <header class="sanctuary-header">
+    <h1 class="title">Pixel Backlog</h1>
+    <button type="button" class="rune-btn" (click)="authService.logout()">
+      Partir
+    </button>
   </header>
 
-  <main class="dashboard-main">
-    <!-- Secção de Controles -->
-    <section class="controls-section nes-container is-rounded">
-      <button type="button" class="nes-btn is-success add-button" (click)="openAddDialog()">
-        <span>+ Add Jogo</span>
-      </button>
-
-      <div class="filters-container">
-        <p class="filters-title">Filtros:</p>
-        <div class="filter-buttons">
-          @for (filter of filterOptions; track filter) {
-            <button
-              type="button"
-              class="nes-btn"
-              [class.is-primary]="backlogService.filter() === filter"
-              (click)="backlogService.filter.set(filter)">
-              {{ filter }}
-            </button>
-          }
-        </div>
-      </div>
+  <main>
+    <section class="filters-container">
+      @for (filter of filterOptions; track filter) {
+        <button
+          type="button"
+          class="rune-btn"
+          [class.is-active]="backlogService.filter() === filter"
+          (click)="backlogService.filter.set(filter)">
+          {{ filter }}
+        </button>
+      }
     </section>
 
-    <!-- Lista de Jogos -->
     <section class="game-list-section">
+       <div class="add-button-container">
+         <button type="button" class="rune-btn" (click)="openAddDialog()">
+            + Adicionar Jogo
+          </button>
+      </div>
+
       <div class="game-list" [@listAnimation]="backlogService.filteredGames().length">
         @for (game of backlogService.filteredGames(); track game.id) {
-          <!-- Adicione o seu componente de card aqui -->
-          <!-- <app-game-card [game]="game"></app-game-card> -->
-
-          <!-- Placeholder temporário para o card -->
-          <div class="nes-container with-title is-rounded is-dark">
-             <p class="title">{{ game.title }}</p>
-             <p>Status: {{ game.status }}</p>
-             <p>Plataformas: {{ game.platforms.join(', ') }} </p>
-             @if (game.isPlatinado) {
-              <p><i class="nes-icon trophy is-small"></i> Platinado!</p>
-             }
+          <div class="game-card">
+            <h3>{{ game.title }}</h3>
+            <p>Status: {{ game.status }}</p>
           </div>
-
         } @empty {
-          <div class="nes-container is-dark with-title is-centered empty-state">
-            <p class="title">Tudo Vazio...</p>
-            <p>O seu backlog está um deserto.</p>
-            <p>Clique em "+ Add Jogo" para começar a sua jornada!</p>
+          <div class="empty-state">
+            <p>O Milagre não respondeu.</p>
+            <p>Adicione um penitente para começar a sua jornada.</p>
           </div>
         }
       </div>
     </section>
+
   </main>
 </div>
