@@ -1,17 +1,84 @@
+/* src/app/features/login/login.scss */
+
 :host {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  // A animação global que já definimos em styles.scss
+  animation: fadeIn 1s ease-out;
 }
 
-.login-container {
+.login-panel {
   width: 90%;
-  max-width: 400px;
+  max-width: 450px;
+  padding: 3rem;
+
+  // O nosso efeito de painel etéreo
+  background: var(--color-ui-bg);
+  border: 1px solid var(--color-border);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.panel-title {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: var(--color-text-faded);
+  letter-spacing: 4px;
+  text-shadow: 2px 2px 5px #000;
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
+}
+
+.form-field {
+  label {
+    display: block;
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  .form-input {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    padding: 0.8rem;
+    font-family: inherit;
+    font-size: 1.3rem;
+    color: var(--color-text-faded);
+    transition: all 0.3s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-grace-hover);
+      box-shadow: 0 0 10px 0px var(--color-grace-hover);
+    }
+  }
+}
+
+.submit-btn {
+  // Estilo herdado do nosso rune-btn, mas com mais destaque
+  background: transparent;
+  color: var(--color-grace-hover);
+  border: 1px solid var(--color-grace-hover);
+  padding: 1rem;
+  margin-top: 1rem;
+  font-family: inherit;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: #000;
+    background: var(--color-ember-active);
+    border-color: var(--color-ember-active);
+    box-shadow: 0 0 15px 0 var(--color-ember-active);
+    text-shadow: none;
+  }
 }
