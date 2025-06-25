@@ -1,0 +1,106 @@
+:host {
+  display: block;
+  padding: 1rem;
+}
+
+// Estilo para a sobreposição do diálogo
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.dashboard-header {
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; // Permite quebrar linha em telas menores
+
+  .header-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+      text-shadow: 2px 2px #000;
+    }
+  }
+}
+
+.controls-section {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.filters-container {
+  width: 100%;
+  .filters-title {
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  .filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+  }
+}
+
+.game-list-section {
+  width: 100%;
+}
+
+.game-list {
+  display: grid;
+  // Grid responsivo
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.empty-state {
+  grid-column: 1 / -1; // Ocupa a largura total do grid
+  padding: 2rem;
+  p {
+    margin-bottom: 1rem;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Media queries para responsividade
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    gap: 1.5rem;
+    .header-content h1 {
+      font-size: 1.2rem;
+    }
+  }
+
+  .filter-buttons .nes-btn {
+    flex-grow: 1;
+  }
+}

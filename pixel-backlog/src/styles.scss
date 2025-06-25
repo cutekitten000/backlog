@@ -1,0 +1,19 @@
+/* src/styles.scss */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body {
+  background-color: #212529;
+  color: red; /* Cor de fundo escura */
+  font-family: 'Press Start 2P', cursive;
+  image-rendering: pixelated; /* Garante que as imagens não fiquem borradas ao escalar */
+}
+
+/* Animação de fade-in global */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
