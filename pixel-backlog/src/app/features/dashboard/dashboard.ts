@@ -1,25 +1,16 @@
-// src/app/features/dashboard/dashboard.ts
-
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { trigger, transition, query, style, stagger, animate } from '@angular/animations';
-
-// Serviços Essenciais
 import { AuthService } from '../../core/auth';
 import { Backlog, FilterStatus } from '../../core/backlog';
-
-// Componentes Compartilhados que o Dashboard utiliza
+import { UserGame } from '../../models/user-game';
 import { AddGameDialog } from '../../shared/add-game-dialog/add-game-dialog';
 import { GameCard } from '../../shared/game-card/game-card';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [
-    CommonModule,
-    AddGameDialog, // Diálogo para adicionar jogos
-    GameCard       // Cartão para exibir cada jogo
-  ],
+  imports: [CommonModule, AddGameDialog, GameCard],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   animations: [
@@ -38,17 +29,14 @@ import { GameCard } from '../../shared/game-card/game-card';
   ]
 })
 export class Dashboard {
-  // Injeção de dependências
   protected authService = inject(AuthService);
   protected backlogService = inject(Backlog);
 
-  // Estado que controla a visibilidade do diálogo
   public isAddDialogOpen = false;
+  public gameBeingEdited: UserGame | null = null; // Guarda o jogo a ser editado
 
-  // Lista de filtros na ordem correta
   protected filterOptions: FilterStatus[] = ['Jogando', 'Em espera', 'Zerado', 'Dropado', 'Platinado', 'Vou platinar', 'Todos'];
 
-  // Mapa de ícones do Material Symbols
   private iconMap: Record<FilterStatus, string> = {
     'Jogando': 'swords',
     'Em espera': 'hourglass_empty',
@@ -59,23 +47,29 @@ export class Dashboard {
     'Todos': 'public'
   };
 
-  // Método para abrir o diálogo
+  // Abre o diálogo para adicionar um novo jogo
   openAddDialog(): void {
+    this.gameBeingEdited = null;
     this.isAddDialogOpen = true;
   }
 
-  // Método para fechar o diálogo
-  closeAddDialog(): void {
-    this.isAddDialogOpen = false;
+  // Abre o diálogo para editar um jogo existente
+  openEditDialog(game: UserGame): void {
+    this.gameBeingEdited = game;
+    this.isAddDialogOpen = true;
   }
 
-  // Função que lida com o evento de apagar vindo do GameCard
-  // NOTA: Para uma melhor experiência, seria ideal adicionar um diálogo de confirmação aqui.
+  // Fecha o diálogo e limpa o estado de edição
+  closeDialog(): void {
+    this.isAddDialogOpen = false;
+    this.gameBeingEdited = null;
+  }
+
   onDeleteGame(gameId: string): void {
+    // Para uma melhor UX, um diálogo de confirmação seria ideal aqui
     this.backlogService.deleteGame(gameId);
   }
 
-  // Função que retorna o nome do ícone para ser usado no template
   getIconForStatus(status: FilterStatus): string {
     return this.iconMap[status] || 'help';
   }

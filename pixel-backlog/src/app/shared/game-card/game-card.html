@@ -1,74 +1,61 @@
-<!-- src/app/shared/game-card/game-card.html -->
-
-<div class="card-container">
-  <!-- A imagem de capa do jogo serve como fundo do cartão -->
+<!-- O container principal do cartão, que lida com o hover -->
+<div class="card-scroll">
+  <!-- A imagem de fundo e o gradiente para legibilidade -->
   <div class="card-background" [style.background-image]="'url(' + game.coverUrl + ')'"></div>
-  <!-- Uma sobreposição escura para garantir a legibilidade do texto -->
   <div class="card-overlay"></div>
 
-  <!-- O conteúdo do cartão, que fica acima do fundo -->
+  <!-- O conteúdo que fica sobreposto -->
   <div class="card-content">
-    <header class="card-header">
-      <h3 class="game-title">{{ game.title }}</h3>
-      <div class="game-status">
-        <span class="status-badge">{{ game.status }}</span>
-      </div>
-    </header>
 
-    <main class="card-body">
-      <div class="info-grid">
-        <!-- Tempo de Jogo -->
-        @if (game.playtime) {
-          <div class="info-item">
-            <span class="info-label">Tempo de Jogo</span>
-            <span class="info-value">{{ game.playtime }}</span>
-          </div>
-        }
-        <!-- Plataformas -->
-        @if (game.platforms?.length) {
-          <div class="info-item">
-            <span class="info-label">Plataformas</span>
-            <span class="info-value">{{ game.platforms.join(', ') }}</span>
-          </div>
-        }
-        <!-- Data de Início -->
-        @if (game.startDate) {
-          <div class="info-item">
-            <span class="info-label">Início</span>
-            <span class="info-value">{{ formatDate(game.startDate) }}</span>
-          </div>
-        }
-        <!-- Data de Fim -->
-        @if (game.finishDate) {
-          <div class="info-item">
-            <span class="info-label">Fim</span>
-            <span class="info-value">{{ formatDate(game.finishDate) }}</span>
-          </div>
-        }
-      </div>
-
-      <!-- Ícones de Platina -->
-      <div class="trophy-section">
-        @if (game.isPlatinado) {
-          <div class="trophy-item active">
-            <i class="material-symbols-outlined">military_tech</i>
-            <span>Platinado</span>
-          </div>
-        }
-        @if (game.willPlatinar) {
-          <div class="trophy-item">
-            <i class="material-symbols-outlined">adjust</i>
-            <span>Vou Platinar</span>
-          </div>
-        }
-      </div>
-    </main>
-
-    <footer class="card-footer">
-      <!-- Ação de Apagar -->
+    <!-- Ações que aparecem no hover -->
+    <div class="card-actions">
+      <button class="action-btn" (click)="edit.emit()" title="Editar Jogo">
+        <i class="material-symbols-outlined">edit</i>
+      </button>
       <button class="action-btn delete-btn" (click)="onDelete($event)" title="Apagar Jogo">
         <i class="material-symbols-outlined">delete</i>
       </button>
+    </div>
+
+    <!-- Corpo principal com todas as informações -->
+    <div class="card-body">
+      <span class="status-badge">{{ game.status }}</span>
+      <h3 class="game-title">{{ game.title }}</h3>
+
+      <div class="info-grid">
+        @if (game.playtime) {
+          <div class="info-item">
+            <span class="info-label">Tempo</span>
+            <span class="info-value">{{ game.playtime }}</span>
+          </div>
+        }
+        @if (game.platforms?.length) {
+          <div class="info-item">
+            <span class="info-label">Plataforma</span>
+            <span class="info-value">{{ game.platforms.join(', ') }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Rodapé com os géneros e ícones de troféu -->
+    <footer class="card-footer">
+      @if (game.genres?.length) {
+        <div class="genre-tags">
+          @for(genre of game.genres; track genre) {
+            <span class="genre-tag">{{ genre }}</span>
+          }
+        </div>
+      }
+
+      <div class="trophy-icons">
+        @if (game.isPlatinado) {
+          <i class="material-symbols-outlined active" title="Platinado">military_tech</i>
+        }
+        @if (game.willPlatinar) {
+          <i class="material-symbols-outlined" title="Vou Platinar">adjust</i>
+        }
+      </div>
     </footer>
   </div>
 </div>

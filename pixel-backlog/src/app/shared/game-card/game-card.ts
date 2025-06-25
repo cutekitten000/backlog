@@ -1,6 +1,4 @@
-// src/app/shared/game-card/game-card.ts
-
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserGame } from '../../models/user-game';
 import { Timestamp } from '@angular/fire/firestore';
@@ -13,17 +11,13 @@ import { Timestamp } from '@angular/fire/firestore';
   styleUrl: './game-card.scss'
 })
 export class GameCard {
-  // Recebe os dados do jogo do componente pai (Dashboard)
+  // Recebe os dados completos do jogo a ser exibido
   @Input({ required: true }) game!: UserGame;
 
-  // Emite um evento com o ID do jogo a ser apagado
+  // Emite um evento para o dashboard quando o botão de apagar é clicado
   @Output() delete = new EventEmitter<string>();
-  // Futuramente, podemos adicionar um evento para editar
-  // @Output() edit = new EventEmitter<UserGame>();
-
-  // Ícones para os checkboxes
-  protected platinadoIcon = 'military_tech';
-  protected vouPlatinarIcon = 'adjust';
+  // Emite um evento para o dashboard quando o botão de editar é clicado
+  @Output() edit = new EventEmitter<void>();
 
   /**
    * Formata uma data do tipo Timestamp do Firebase para uma string legível (DD/MM/AAAA).
@@ -34,12 +28,13 @@ export class GameCard {
     if (!date || !(date instanceof Timestamp)) {
       return '';
     }
+    // Usando 'pt-PT' para o formato Dia/Mês/Ano
     return new Date(date.toMillis()).toLocaleDateString('pt-PT');
   }
 
   /**
-   * Emite o evento para apagar o jogo.
-   * A propagação do evento é interrompida para evitar comportamentos inesperados.
+   * Emite o evento para apagar o jogo, passando o seu ID.
+   * A propagação do evento é interrompida para evitar que o clique afete outros elementos.
    * @param event O evento de clique do rato.
    */
   onDelete(event: MouseEvent): void {
