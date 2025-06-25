@@ -1,31 +1,25 @@
+// src/app/features/dashboard/dashboard.ts
+
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { trigger, transition, query, style, stagger, animate } from '@angular/animations';
-
 import { AuthService } from '../../core/auth';
 import { Backlog, FilterStatus } from '../../core/backlog';
-
-// Importe os seus componentes de Card e Dialog quando os criar
-// import { GameCard } from '../../shared/game-card/game-card';
-// import { AddGameDialog } from '../../shared/add-game-dialog/add-game-dialog';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  // Adicione os componentes de Card e Dialog aqui
-  imports: [CommonModule /*, GameCard, AddGameDialog */],
+  imports: [CommonModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   animations: [
     trigger('listAnimation', [
-      transition('* => *', [ // Executa sempre que o número de itens na lista muda
+      transition('* => *', [
         query(':enter', [
-          style({ opacity: 0, transform: 'translateY(-20px)' }),
-          stagger(
-            '80ms',
-            animate(
-              '400ms ease-out',
-              style({ opacity: 1, transform: 'translateY(0)' })
+          style({ opacity: 0, transform: 'translateY(-15px)' }),
+          stagger('50ms',
+            animate('550ms ease-out',
+              style({ opacity: 1, transform: 'translateY(0px)' })
             )
           )
         ], { optional: true })
@@ -34,21 +28,29 @@ import { Backlog, FilterStatus } from '../../core/backlog';
   ]
 })
 export class Dashboard {
-  // Injeção de dependências
   protected authService = inject(AuthService);
   protected backlogService = inject(Backlog);
 
-  // Opções para os botões de filtro
-  protected filterOptions: FilterStatus[] = ['Todos', 'Jogando', 'Em espera', 'Zerado', 'Dropado', 'Platinado', 'Vou platinar'];
+  protected filterOptions: FilterStatus[] = ['Jogando', 'Em espera', 'Zerado', 'Dropado', 'Platinado', 'Vou platinar', 'Todos'];
 
-  // Estado para controlar a visibilidade do diálogo de adição
   public isAddDialogOpen = false;
 
-  openAddDialog(): void {
-    this.isAddDialogOpen = true;
-  }
+  openAddDialog() { this.isAddDialogOpen = true; }
+  closeAddDialog() { this.isAddDialogOpen = false; }
 
-  closeAddDialog(): void {
-    this.isAddDialogOpen = false;
+  // NOVO MAPA DE ÍCONES: Apenas os nomes dos Material Symbols
+  private iconMap: Record<FilterStatus, string> = {
+    'Jogando': 'swords',
+    'Em espera': 'hourglass_empty',
+    'Zerado': 'military_tech', // Medalha
+    'Dropado': 'close',         // X
+    'Platinado': 'emoji_events',  // Troféu
+    'Vou platinar': 'adjust',
+    'Todos': 'buttons_alt'
+  };
+
+  // Função simplificada que retorna o nome do ícone
+  getIconForStatus(status: FilterStatus): string {
+    return this.iconMap[status] || '';
   }
 }

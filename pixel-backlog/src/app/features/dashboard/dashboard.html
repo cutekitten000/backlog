@@ -1,7 +1,6 @@
 <!-- src/app/features/dashboard/dashboard.html -->
 
 <div class="sanctuary-container">
-
   <header class="sanctuary-header">
     <h1 class="title">Pixel Backlog</h1>
     <button type="button" class="rune-btn" (click)="authService.logout()">
@@ -17,18 +16,20 @@
           class="rune-btn"
           [class.is-active]="backlogService.filter() === filter"
           (click)="backlogService.filter.set(filter)">
-          {{ filter }}
+          <!-- MUDANÇA AQUI: Usando a tag <i> com a classe correta -->
+          <i class="material-symbols-outlined rune-icon">{{ getIconForStatus(filter) }}</i>
+          <span>{{ filter }}</span>
         </button>
       }
     </section>
 
+    <!-- O resto do seu HTML continua igual -->
     <section class="game-list-section">
-       <div class="add-button-container">
-         <button type="button" class="rune-btn" (click)="openAddDialog()">
-            + Adicionar Jogo
-          </button>
+      <div class="add-button-container">
+        <button type="button" class="rune-btn" (click)="openAddDialog()">
+          + Adicionar Jogo
+        </button>
       </div>
-
       <div class="game-list" [@listAnimation]="backlogService.filteredGames().length">
         @for (game of backlogService.filteredGames(); track game.id) {
           <div class="game-card">
@@ -43,6 +44,5 @@
         }
       </div>
     </section>
-
   </main>
 </div>

@@ -41,7 +41,7 @@ export class Backlog {
 
   // Sinais para reatividade na UI
   private games = signal<UserGame[]>([]);
-  public filter = signal<FilterStatus>('Todos');
+  public filter = signal<FilterStatus>('Jogando');
 
   // Sinal computado para a lista filtrada, já ordenada por data de adição
   public filteredGames = computed(() => {
