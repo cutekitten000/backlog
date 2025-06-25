@@ -8,15 +8,17 @@ import { trigger, transition, query, style, stagger, animate } from '@angular/an
 import { AuthService } from '../../core/auth';
 import { Backlog, FilterStatus } from '../../core/backlog';
 
-// Componentes Compartilhados
+// Componentes Compartilhados que o Dashboard utiliza
 import { AddGameDialog } from '../../shared/add-game-dialog/add-game-dialog';
+import { GameCard } from '../../shared/game-card/game-card';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
     CommonModule,
-    AddGameDialog // Importa o diálogo para que o HTML possa usá-lo
+    AddGameDialog, // Diálogo para adicionar jogos
+    GameCard       // Cartão para exibir cada jogo
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
@@ -40,19 +42,19 @@ export class Dashboard {
   protected authService = inject(AuthService);
   protected backlogService = inject(Backlog);
 
-  // Estado que controla se o diálogo de "Adicionar Jogo" está visível
+  // Estado que controla a visibilidade do diálogo
   public isAddDialogOpen = false;
 
-  // Lista de filtros na ordem correta, com "Jogando" em primeiro
+  // Lista de filtros na ordem correta
   protected filterOptions: FilterStatus[] = ['Jogando', 'Em espera', 'Zerado', 'Dropado', 'Platinado', 'Vou platinar', 'Todos'];
 
-  // Mapa de ícones com os nomes dos Material Symbols
+  // Mapa de ícones do Material Symbols
   private iconMap: Record<FilterStatus, string> = {
     'Jogando': 'swords',
     'Em espera': 'hourglass_empty',
-    'Zerado': 'military_tech', // Medalha
-    'Dropado': 'close',         // X
-    'Platinado': 'emoji_events',  // Troféu
+    'Zerado': 'military_tech',
+    'Dropado': 'close',
+    'Platinado': 'emoji_events',
     'Vou platinar': 'adjust',
     'Todos': 'public'
   };
@@ -67,8 +69,14 @@ export class Dashboard {
     this.isAddDialogOpen = false;
   }
 
+  // Função que lida com o evento de apagar vindo do GameCard
+  // NOTA: Para uma melhor experiência, seria ideal adicionar um diálogo de confirmação aqui.
+  onDeleteGame(gameId: string): void {
+    this.backlogService.deleteGame(gameId);
+  }
+
   // Função que retorna o nome do ícone para ser usado no template
   getIconForStatus(status: FilterStatus): string {
-    return this.iconMap[status] || 'help'; // Retorna 'help' como um ícone de fallback
+    return this.iconMap[status] || 'help';
   }
 }

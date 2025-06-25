@@ -1,6 +1,6 @@
 <!-- src/app/features/dashboard/dashboard.html -->
 
-<!-- Renderiza o componente do diálogo apenas quando a variável isAddDialogOpen for verdadeira -->
+<!-- O diálogo para adicionar jogos é renderizado aqui quando ativado -->
 @if (isAddDialogOpen) {
   <app-add-game-dialog (close)="closeAddDialog()"></app-add-game-dialog>
 }
@@ -35,12 +35,14 @@
       </div>
 
       <div class="game-list" [@listAnimation]="backlogService.filteredGames().length">
+        <!-- O loop agora renderiza o nosso novo componente de cartão -->
         @for (game of backlogService.filteredGames(); track game.id) {
-          <div class="game-card">
-            <h3>{{ game.title }}</h3>
-            <p>Status: {{ game.status }}</p>
-          </div>
+          <app-game-card
+            [game]="game"
+            (delete)="onDeleteGame($event)">
+          </app-game-card>
         } @empty {
+          <!-- Mensagem para quando não há jogos a serem exibidos -->
           <div class="empty-state">
             <p>O Milagre não respondeu.</p>
             <p>Adicione um penitente para começar a sua jornada.</p>
