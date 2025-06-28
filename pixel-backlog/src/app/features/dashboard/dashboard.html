@@ -4,6 +4,11 @@
   <app-add-game-dialog [gameToEdit]="gameBeingEdited" (close)="closeDialog()"></app-add-game-dialog>
 }
 
+<!-- NOVO: Diálogo para ver detalhes e DLCs -->
+@if (isDetailsOpen && selectedGameForDetails) {
+  <app-game-details-dialog [game]="selectedGameForDetails" (close)="closeDetailsDialog()"></app-game-details-dialog>
+}
+
 <div class="sanctuary-container">
   <header class="sanctuary-header">
     <h1 class="title">Pixel Backlog</h1>
@@ -38,7 +43,8 @@
           <app-game-card
             [game]="game"
             (delete)="onDeleteGame($event)"
-            (edit)="openEditDialog(game)"> <!-- CORREÇÃO: Adicionamos a escuta do evento (edit) -->
+            (edit)="openEditDialog(game)"
+            (details)="openDetailsDialog(game)">
           </app-game-card>
         } @empty {
           <div class="empty-state">

@@ -1,0 +1,53 @@
+<!-- src/app/shared/game-details-dialog/game-details-dialog.html -->
+
+<div class="dialog-overlay" (click)="close.emit()">
+  <div class="dialog-panel tome-panel" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="close.emit()">
+      <i class="material-symbols-outlined">close</i>
+    </button>
+
+    <header class="tome-header">
+      <img [src]="game.coverUrl" alt="Capa de {{game.title}}" onerror="this.style.display='none'">
+      <h1>{{ game.title }}</h1>
+    </header>
+
+    <div class="tome-content">
+      <h2>Crónicas da Jornada (DLCs)</h2>
+
+      <div class="dlc-list">
+        @if (dlcs$ | async; as dlcs) {
+          @for (dlc of dlcs; track dlc.id) {
+            <div class="dlc-item">
+              <span class="dlc-title">{{ dlc.title }}</span>
+              <span class="dlc-status">{{ dlc.status }}</span>
+              <button class="delete-dlc-btn" (click)="deleteDlc(dlc.id)" title="Apagar Crónica">
+                <i class="material-symbols-outlined">delete</i>
+              </button>
+            </div>
+          }
+          @if (dlcs.length === 0 && !isAddingDlc) {
+            <p class="status-text">Nenhuma crónica foi registada para esta jornada.</p>
+          }
+        }
+      </div>
+
+      <div class="add-dlc-section">
+        @if (isAddingDlc) {
+          <div class="add-dlc-form">
+            <input
+              type="text"
+              class="form-input"
+              placeholder="Título da nova crónica..."
+              [(ngModel)]="newDlcTitle"
+              (keyup.enter)="addDlc()"
+            >
+            <button type="button" class="add-btn" (click)="addDlc()">Adicionar</button>
+            <button type="button" class="cancel-btn" (click)="isAddingDlc = false">Cancelar</button>
+          </div>
+        } @else {
+          <button class="rune-btn" (click)="isAddingDlc = true">+ Nova Crónica</button>
+        }
+      </div>
+    </div>
+  </div>
+</div>

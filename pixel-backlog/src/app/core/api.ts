@@ -35,4 +35,13 @@ export class Api {
     return this.http.get<{ results: ApiGame[] }>(`${this.API_URL}/games`, { params });
   }
 
+  /**
+   * Busca todas as DLCs/expansões para um ID de jogo específico.
+   * @param gameId O ID do jogo base na API RAWG.
+   */
+  getDlcsForGame(gameId: number): Observable<{ results: ApiGame[] }> {
+    const params = new HttpParams().set('key', this.API_KEY);
+    return this.http.get<{ results: ApiGame[] }>(`${this.API_URL}/games/${gameId}/additions`, { params });
+  }
+
 }

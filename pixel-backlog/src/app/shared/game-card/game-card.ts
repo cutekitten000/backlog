@@ -18,6 +18,7 @@ export class GameCard {
   @Output() delete = new EventEmitter<string>();
   // Emite um evento para o dashboard quando o botão de editar é clicado
   @Output() edit = new EventEmitter<void>();
+  @Output() details = new EventEmitter<void>();
 
   /**
    * Formata uma data do tipo Timestamp do Firebase para uma string legível (DD/MM/AAAA).

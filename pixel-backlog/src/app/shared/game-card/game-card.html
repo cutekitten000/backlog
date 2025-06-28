@@ -9,6 +9,9 @@
 
     <!-- Ações que aparecem no hover -->
     <div class="card-actions">
+      <button class="action-btn" (click)="details.emit()" title="Ver Detalhes e DLCs">
+        <i class="material-symbols-outlined">more_horiz</i>
+      </button>
       <button class="action-btn" (click)="edit.emit()" title="Editar Jogo">
         <i class="material-symbols-outlined">edit</i>
       </button>
