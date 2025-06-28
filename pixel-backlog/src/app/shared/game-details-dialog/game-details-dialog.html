@@ -19,7 +19,15 @@
           @for (dlc of dlcs; track dlc.id) {
             <div class="dlc-item">
               <span class="dlc-title">{{ dlc.title }}</span>
-              <span class="dlc-status">{{ dlc.status }}</span>
+              <!-- MUDANÇA PRINCIPAL: O span estático é substituído por este select -->
+              <select
+                class="dlc-status-select"
+                [ngModel]="dlc.status"
+                (ngModelChange)="onDlcStatusChange($event, dlc)">
+                @for (status of statuses; track status) {
+                  <option [value]="status">{{ status }}</option>
+                }
+              </select>
               <button class="delete-dlc-btn" (click)="deleteDlc(dlc.id)" title="Apagar Crónica">
                 <i class="material-symbols-outlined">delete</i>
               </button>
@@ -34,18 +42,34 @@
       <div class="add-dlc-section">
         @if (isAddingDlc) {
           <div class="add-dlc-form">
-            <input
-              type="text"
-              class="form-input"
-              placeholder="Título da nova crónica..."
-              [(ngModel)]="newDlcTitle"
-              (keyup.enter)="addDlc()"
-            >
-            <button type="button" class="add-btn" (click)="addDlc()">Adicionar</button>
-            <button type="button" class="cancel-btn" (click)="isAddingDlc = false">Cancelar</button>
+            @if(isFetchingDlcs) {
+              <p class="status-text">Procurando crónicas perdidas...</p>
+            } @else {
+              @if (availableDlcs.length > 0) {
+                <form [formGroup]="dlcForm" (ngSubmit)="submitSelectedDlcs()">
+                  <p class="form-title">Selecione as crónicas a adicionar:</p>
+                  <div class="available-dlc-list" formArrayName="dlcs">
+                    @for(dlc of availableDlcs; track dlc.id; let i = $index) {
+                      <label class="checkbox-label">
+                        <input type="checkbox" [formControlName]="i">
+                        <span class="checkbox-custom"></span>
+                        <span>{{ dlc.name }}</span>
+                      </label>
+                    }
+                  </div>
+                  <div class="form-actions">
+                    <button type="submit" class="add-btn">Confirmar</button>
+                    <button type="button" class="cancel-btn" (click)="cancelAddDlc()">Cancelar</button>
+                  </div>
+                </form>
+              } @else {
+                <p class="status-text">Nenhuma crónica nova foi encontrada.</p>
+                <button type="button" class="cancel-btn" (click)="cancelAddDlc()">Voltar</button>
+              }
+            }
           </div>
         } @else {
-          <button class="rune-btn" (click)="isAddingDlc = true">+ Nova Crónica</button>
+          <button class="rune-btn" (click)="showDlcSelection()">+ Adicionar DLC</button>
         }
       </div>
     </div>

@@ -91,6 +91,12 @@ export class Backlog {
     await addDoc(dlcCollection, newDlc);
   }
 
+  async updateDlc(gameId: string, dlcId: string, dlcData: Partial<UserDlc>): Promise<void> {
+    if (!gameId || !dlcId) return;
+    const dlcDocRef = doc(this.firestore, `games/${gameId}/dlcs/${dlcId}`);
+    await updateDoc(dlcDocRef, dlcData);
+  }
+
   async deleteDlc(gameId: string, dlcId: string): Promise<void> {
     if (!gameId || !dlcId) return;
     const dlcDocRef = doc(this.firestore, `games/${gameId}/dlcs/${dlcId}`);
