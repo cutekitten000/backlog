@@ -1,8 +1,7 @@
-<!-- src/app/features/dashboard/dashboard.html -->
-
-<!-- O diálogo para adicionar jogos é renderizado aqui quando ativado -->
+<!-- Diálogo para adicionar OU editar jogos -->
 @if (isAddDialogOpen) {
-  <app-add-game-dialog (close)="closeDialog()"></app-add-game-dialog>
+  <!-- CORREÇÃO: Adicionamos a ligação [gameToEdit] -->
+  <app-add-game-dialog [gameToEdit]="gameBeingEdited" (close)="closeDialog()"></app-add-game-dialog>
 }
 
 <div class="sanctuary-container">
@@ -35,14 +34,13 @@
       </div>
 
       <div class="game-list" [@listAnimation]="backlogService.filteredGames().length">
-        <!-- O loop agora renderiza o nosso novo componente de cartão -->
         @for (game of backlogService.filteredGames(); track game.id) {
           <app-game-card
             [game]="game"
-            (delete)="onDeleteGame($event)">
+            (delete)="onDeleteGame($event)"
+            (edit)="openEditDialog(game)"> <!-- CORREÇÃO: Adicionamos a escuta do evento (edit) -->
           </app-game-card>
         } @empty {
-          <!-- Mensagem para quando não há jogos a serem exibidos -->
           <div class="empty-state">
             <p>O Milagre não respondeu.</p>
             <p>Adicione um penitente para começar a sua jornada.</p>

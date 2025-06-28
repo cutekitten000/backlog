@@ -31,10 +31,12 @@ export class AddGameDialog implements OnInit {
     distinctUntilChanged(),
     filter(term => term.length > 2 || term.length === 0),
     tap(() => this.isSearching = true),
-    switchMap((term: string) => term ? this.apiService.searchGames(term) : of({ results: [] })),
+    
+    // AQUI ESTÁ A MUDANÇA: Adicionamos o '4' para filtrar por PC
+    switchMap((term: string) => term ? this.apiService.searchGames(term, '4') : of({ results: [] })),
+    
     tap(() => this.isSearching = false)
   );
-
   public selectedGame: ApiGame | null = null;
   public gameForm: FormGroup;
   public isDuplicate = false;

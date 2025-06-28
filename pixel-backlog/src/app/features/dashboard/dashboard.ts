@@ -33,7 +33,8 @@ export class Dashboard {
   protected backlogService = inject(Backlog);
 
   public isAddDialogOpen = false;
-  public gameBeingEdited: UserGame | null = null; // Guarda o jogo a ser editado
+  // CORREÇÃO: Usamos 'undefined' para compatibilidade de tipos
+  public gameBeingEdited: UserGame | undefined;
 
   protected filterOptions: FilterStatus[] = ['Jogando', 'Em espera', 'Zerado', 'Dropado', 'Platinado', 'Vou platinar', 'Todos'];
 
@@ -47,26 +48,22 @@ export class Dashboard {
     'Todos': 'public'
   };
 
-  // Abre o diálogo para adicionar um novo jogo
   openAddDialog(): void {
-    this.gameBeingEdited = null;
+    this.gameBeingEdited = undefined;
     this.isAddDialogOpen = true;
   }
 
-  // Abre o diálogo para editar um jogo existente
   openEditDialog(game: UserGame): void {
     this.gameBeingEdited = game;
     this.isAddDialogOpen = true;
   }
 
-  // Fecha o diálogo e limpa o estado de edição
   closeDialog(): void {
     this.isAddDialogOpen = false;
-    this.gameBeingEdited = null;
+    this.gameBeingEdited = undefined;
   }
 
   onDeleteGame(gameId: string): void {
-    // Para uma melhor UX, um diálogo de confirmação seria ideal aqui
     this.backlogService.deleteGame(gameId);
   }
 
