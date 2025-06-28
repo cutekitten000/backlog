@@ -5,25 +5,14 @@
     <button class="close-btn" (click)="close.emit()">
       <i class="material-symbols-outlined">close</i>
     </button>
-    <h2 class="dialog-title">Consagrar Nova Jornada</h2>
+    <h2 class="dialog-title">{{ isEditMode ? 'Reescrever Crónica' : 'Consagrar Nova Jornada' }}</h2>
 
-    <!-- Vista de Busca: Aparece primeiro -->
+    <!-- Vista de Busca -->
     @if (!selectedGame) {
       <div class="search-section">
-        <input
-          #searchInput
-          type="text"
-          class="form-input"
-          placeholder="Procurar o nome do jogo..."
-          (keyup)="search(searchInput.value)"
-          autocomplete="off"
-        >
-
-        <!-- Mensagem de erro para jogos duplicados -->
-        @if (isDuplicate) {
-          <p class="error-message">Este penitente já iniciou a sua jornada.</p>
-        }
-
+        <input #searchInput type="text" class="form-input" placeholder="Procurar o nome do jogo..."
+          (keyup)="search(searchInput.value)" autocomplete="off">
+        @if (isDuplicate) { <p class="error-message">Este penitente já iniciou a sua jornada.</p> }
         @if (isSearching) { <p class="search-status">Procurando nos anais...</p> }
         <ul class="results-list">
           @for (game of (searchResults$ | async)?.results; track game.id) {
@@ -36,7 +25,7 @@
       </div>
     }
 
-    <!-- Vista de Formulário: Aparece após selecionar um jogo -->
+    <!-- Vista de Formulário -->
     @if (selectedGame) {
       <form [formGroup]="gameForm" (ngSubmit)="onSubmit()" class="game-form">
         <div class="form-header">
@@ -75,6 +64,18 @@
               <input id="finishDate" type="date" formControlName="finishDate" class="form-input">
             </div>
         </div>
+        
+        <!-- NOVA LINHA PARA OS CAMPOS DE CONQUISTA -->
+        <div class="form-row">
+            <div class="form-field">
+              <label for="achievementsGotten">Conquistas Obtidas</label>
+              <input id="achievementsGotten" type="number" formControlName="achievementsGotten" class="form-input">
+            </div>
+            <div class="form-field">
+              <label for="achievementsTotal">Total de Conquistas</label>
+              <input id="achievementsTotal" type="number" formControlName="achievementsTotal" class="form-input">
+            </div>
+        </div>
 
         <div class="form-row checkboxes">
            <label class="checkbox-label">
@@ -89,7 +90,35 @@
            </label>
         </div>
 
-        <button type="submit" class="submit-btn" [disabled]="gameForm.invalid">Adicionar</button>
+        <!-- Secção de DLCs, que só aparece no modo de Adicionar -->
+        @if (!isEditMode) {
+          <div class="dlc-section" formArrayName="selectedDlcs">
+            <h4 class="section-title">Crónicas Adicionais (DLCs)</h4>
+            @if(isFetchingDlcs) {
+              <p class="status-text">Procurando crónicas perdidas...</p>
+            } @else {
+              @if(availableDlcs$ | async; as dlcs) {
+                @if (dlcs.length > 0) {
+                  <div class="available-dlc-list">
+                    @for(dlc of dlcs; track dlc.id; let i = $index) {
+                      <label class="checkbox-label">
+                        <input type="checkbox" [formControlName]="i">
+                        <span class="checkbox-custom"></span>
+                        <span>{{ dlc.name }}</span>
+                      </label>
+                    }
+                  </div>
+                } @else {
+                  <p class="status-text">Nenhuma crónica adicional encontrada.</p>
+                }
+              }
+            }
+          </div>
+        }
+        
+        <button type="submit" class="submit-btn" [disabled]="gameForm.invalid">
+          {{ isEditMode ? 'Salvar Alterações' : 'Adicionar Jornada' }}
+        </button>
       </form>
     }
   </div>

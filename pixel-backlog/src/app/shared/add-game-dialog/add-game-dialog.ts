@@ -44,6 +44,9 @@ export class AddGameDialog implements OnInit {
   public availableDlcs$: Observable<ApiGame[]> | null = null;
   private currentAvailableDlcs: ApiGame[] = [];
 
+  // PROPRIEDADE RESTAURADA: Esta propriedade é necessária para o seu HTML
+  public isFetchingDlcs = false;
+
   public statuses: GameStatus[] = ['Jogando', 'Em espera', 'Zerado', 'Dropado'];
   public platforms: GamePlatform[] = ['Steam', 'Gamepass', 'Jack Sparrow', 'Outros'];
 
@@ -60,7 +63,10 @@ export class AddGameDialog implements OnInit {
       finishDate: [''],
       isPlatinado: [false],
       willPlatinar: [false],
-      selectedDlcs: this.fb.array([])
+      selectedDlcs: this.fb.array([]),
+      // ADIÇÃO DOS NOVOS CAMPOS, MANTENDO TUDO O RESTO
+      achievementsGotten: [0],
+      achievementsTotal: [0]
     });
   }
 
@@ -92,7 +98,6 @@ export class AddGameDialog implements OnInit {
       this.searchResults$ = of({ results: [] });
       return;
     }
-
     this.isDuplicate = false;
     this.selectedGame = game;
     this.searchResults$ = of({ results: [] });
@@ -104,7 +109,7 @@ export class AddGameDialog implements OnInit {
       genres: game.genres.map(g => g.name)
     });
 
-    // Usamos um Observable para garantir que o Angular detete as mudanças
+    this.isFetchingDlcs = true; // Ativa o estado de busca
     this.availableDlcs$ = this.apiService.getDlcsForGame(game.id).pipe(
       map(response => response.results),
       tap(dlcs => {
@@ -112,6 +117,7 @@ export class AddGameDialog implements OnInit {
         const dlcFormArray = this.gameForm.get('selectedDlcs') as FormArray;
         dlcFormArray.clear();
         dlcs.forEach(() => dlcFormArray.push(new FormControl(false)));
+        this.isFetchingDlcs = false; // Desativa o estado de busca quando termina
       })
     );
   }
@@ -120,25 +126,24 @@ export class AddGameDialog implements OnInit {
     if (this.gameForm.invalid) { return; }
     const formValue = this.gameForm.value;
 
+    const gameData = { ...formValue };
+    gameData.achievementsGotten = Number(gameData.achievementsGotten) || 0;
+    gameData.achievementsTotal = Number(gameData.achievementsTotal) || 0;
+
     if (this.isEditMode && this.gameToEdit?.id) {
-      const { selectedDlcs, ...gameData } = formValue;
-      if (gameData.startDate) gameData.startDate = Timestamp.fromDate(new Date(gameData.startDate));
-      if (gameData.finishDate) gameData.finishDate = Timestamp.fromDate(new Date(gameData.finishDate));
-      await this.backlogService.updateGame(this.gameToEdit.id, gameData);
+      const { selectedDlcs, ...dataToUpdate } = gameData;
+      if (dataToUpdate.startDate) dataToUpdate.startDate = Timestamp.fromDate(new Date(dataToUpdate.startDate));
+      if (dataToUpdate.finishDate) dataToUpdate.finishDate = Timestamp.fromDate(new Date(dataToUpdate.finishDate));
+      await this.backlogService.updateGame(this.gameToEdit.id, dataToUpdate);
     } else {
-      const newGameData: Omit<UserGame, 'id' | 'userId' | 'addedAt'> = {
-        apiGameId: formValue.apiGameId, title: formValue.title, coverUrl: formValue.coverUrl,
-        genres: formValue.genres, status: formValue.status, platforms: formValue.platforms,
-        playtime: formValue.playtime, isPlatinado: formValue.isPlatinado,
-        willPlatinar: formValue.willPlatinar
-      };
-      if (formValue.startDate) newGameData.startDate = Timestamp.fromDate(new Date(formValue.startDate));
-      if (formValue.finishDate) newGameData.finishDate = Timestamp.fromDate(new Date(formValue.finishDate));
+      const newGameData: Omit<UserGame, 'id' | 'userId' | 'addedAt'> = gameData;
+      if (gameData.startDate) newGameData.startDate = Timestamp.fromDate(new Date(gameData.startDate));
+      if (gameData.finishDate) newGameData.finishDate = Timestamp.fromDate(new Date(gameData.finishDate));
       
       const newGameId = await this.backlogService.addGame(newGameData);
 
       if (newGameId) {
-        const selectedApiDlcs = formValue.selectedDlcs
+        const selectedApiDlcs = gameData.selectedDlcs
           .map((checked: boolean, i: number) => checked ? this.currentAvailableDlcs[i] : null)
           .filter((dlc: ApiGame | null): dlc is ApiGame => dlc !== null);
 

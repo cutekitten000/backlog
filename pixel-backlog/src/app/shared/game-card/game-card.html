@@ -1,13 +1,10 @@
-<!-- O container principal do cartão, que lida com o hover -->
+<!-- src/app/shared/game-card/game-card.html -->
+
 <div class="card-scroll">
-  <!-- A imagem de fundo e o gradiente para legibilidade -->
   <div class="card-background" [style.background-image]="'url(' + game.coverUrl + ')'"></div>
   <div class="card-overlay"></div>
 
-  <!-- O conteúdo que fica sobreposto -->
   <div class="card-content">
-
-    <!-- Ações que aparecem no hover -->
     <div class="card-actions">
       <button class="action-btn" (click)="details.emit()" title="Ver Detalhes e DLCs">
         <i class="material-symbols-outlined">more_horiz</i>
@@ -20,7 +17,6 @@
       </button>
     </div>
 
-    <!-- Corpo principal com todas as informações -->
     <div class="card-body">
       <span class="status-badge">{{ game.status }}</span>
       <h3 class="game-title">{{ game.title }}</h3>
@@ -32,25 +28,35 @@
             <span class="info-value">{{ game.playtime }}</span>
           </div>
         }
-        @if (game.platforms?.length) {
+        @if (game.platforms.length) {
           <div class="info-item">
             <span class="info-label">Plataforma</span>
             <span class="info-value">{{ game.platforms.join(', ') }}</span>
           </div>
         }
       </div>
+
+      <!-- NOVA SECÇÃO PARA A BARRA DE PROGRESSO DE CONQUISTAS -->
+      @if (game.achievementsTotal && game.achievementsTotal > 0) {
+        <div class="achievements-section">
+          <p class="achievements-text">
+            {{ game.achievementsGotten }} / {{ game.achievementsTotal }} conquistas
+          </p>
+          <div class="progress-bar">
+            <div class="progress-bar-fill" [style.width.%]="achievementProgress"></div>
+          </div>
+        </div>
+      }
     </div>
 
-    <!-- Rodapé com os géneros e ícones de troféu -->
     <footer class="card-footer">
-      @if (game.genres?.length) {
+      @if (game.genres.length) {
         <div class="genre-tags">
           @for(genre of game.genres; track genre) {
             <span class="genre-tag">{{ genre }}</span>
           }
         </div>
       }
-
       <div class="trophy-icons">
         @if (game.isPlatinado) {
           <i class="material-symbols-outlined active" title="Platinado">military_tech</i>

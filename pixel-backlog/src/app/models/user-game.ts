@@ -18,4 +18,8 @@ export interface UserGame {
   finishDate?: Timestamp;
   platforms: GamePlatform[];
   addedAt: Timestamp;
+
+  // NOVOS CAMPOS PARA CONQUISTAS
+  achievementsGotten?: number;
+  achievementsTotal?: number;
 }
