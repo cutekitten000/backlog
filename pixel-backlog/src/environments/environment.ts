@@ -9,5 +9,8 @@ export const environment = {
     messagingSenderId: "545684118652",
     appId: "1:545684118652:web:2a242930a87b55a3597df9"
   },
-  rawgApiKey: "2fdc34a467f94a5f8865e34015c98fe8"
+  twitch: {
+    clientId: 'dfdqqc4se8iyv6o9bcsedz4nnykmfz',
+    clientSecret: 'v6emrpy25755sgewn7xmiveao48hs'
+  }
 };
