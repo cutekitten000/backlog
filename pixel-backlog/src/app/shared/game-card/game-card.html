@@ -1,10 +1,10 @@
 <!-- src/app/shared/game-card/game-card.html -->
 
-<div class="gallery-card">
+<div class="gallery-card" (click)="details.emit()">
   <!-- A IMAGEM COMO PROTAGONISTA -->
-  <div class="card-artwork" (click)="details.emit()" title="Ver Detalhes e DLCs">
+  <div class="card-artwork">
     <img [src]="game.coverUrl" alt="Capa de {{game.title}}" class="card-image" onerror="this.style.display='none'">
-
+    
     <!-- Emblemas sobrepostos -->
     <div class="artwork-badges">
       <div class="top-badges">
@@ -17,7 +17,7 @@
       <span class="badge status" [ngClass]="game.status.toLowerCase().replace(' ', '-')">{{ game.status }}</span>
     </div>
 
-    <!-- Botões de Ação Restaurados (aparecem no hover) -->
+    <!-- Botões de Ação -->
     <div class="card-actions">
       <button class="action-btn" (click)="edit.emit(); $event.stopPropagation()" title="Editar Jogo">
         <i class="material-symbols-outlined">edit</i>
@@ -45,14 +45,15 @@
       </div>
     }
 
-    <!-- Secção de DLCs Restaurada -->
+    <!-- Secção de DLCs -->
     <div class="dlc-section">
-      <span class="section-title">DLCs Disponíveis</span>
+      <span class="section-title">DLCs</span>
       <div class="dlc-tags">
         @if(dlcs$ | async; as dlcs) {
           @if(dlcs.length > 0) {
             @for(dlc of dlcs; track dlc.id) {
-              <span class="dlc-tag">{{ dlc.title }}</span>
+              <!-- AQUI ESTÁ A MUDANÇA: Adicionamos o [ngClass] -->
+              <span class="dlc-tag" [ngClass]="dlc.status.toLowerCase().replace(' ', '-')">{{ dlc.title }}</span>
             }
           } @else {
             <span class="no-dlc-text">Nenhuma</span>
