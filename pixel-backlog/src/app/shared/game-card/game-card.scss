@@ -37,9 +37,10 @@
     width: 100%; height: 100%; object-fit: cover;
     transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
     // MUDANÇA: Escurece a imagem por padrão
-    filter: brightness(85%);
+    filter: brightness(65%);
   }
 }
+
 :host:hover .card-artwork .card-image {
   transform: scale(1.05);
   // MUDANÇA: A imagem fica um pouco mais clara no hover
@@ -94,7 +95,7 @@
   margin: 0;
   line-height: 1.3;
   transition: color 0.3s ease;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
 }
 :host:hover .game-title {
   color: #c4b5fd;
