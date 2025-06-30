@@ -1,70 +1,79 @@
 <!-- src/app/shared/game-card/game-card.html -->
 
-<div class="card-scroll">
-  <div class="card-background" [style.background-image]="'url(' + game.coverUrl + ')'"></div>
-  <div class="card-overlay"></div>
+<div class="gallery-card">
+  <!-- A IMAGEM COMO PROTAGONISTA -->
+  <div class="card-artwork" (click)="details.emit()" title="Ver Detalhes e DLCs">
+    <img [src]="game.coverUrl" alt="Capa de {{game.title}}" class="card-image" onerror="this.style.display='none'">
 
-  <div class="card-content">
+    <!-- Emblemas sobrepostos -->
+    <div class="artwork-badges">
+      <div class="top-badges">
+        @if (game.isPlatinado) {
+          <span class="badge platinum conquered"><i class="material-symbols-outlined">workspace_premium</i> Platina</span>
+        } @else if (game.willPlatinar) {
+          <span class="badge platinum planned"><i class="material-symbols-outlined">workspace_premium</i> Planejada</span>
+        }
+      </div>
+      <span class="badge status" [ngClass]="game.status.toLowerCase().replace(' ', '-')">{{ game.status }}</span>
+    </div>
+
+    <!-- Botões de Ação Restaurados (aparecem no hover) -->
     <div class="card-actions">
-      <button class="action-btn" (click)="details.emit()" title="Ver Detalhes e DLCs">
-        <i class="material-symbols-outlined">more_horiz</i>
-      </button>
-      <button class="action-btn" (click)="edit.emit()" title="Editar Jogo">
+      <button class="action-btn" (click)="edit.emit(); $event.stopPropagation()" title="Editar Jogo">
         <i class="material-symbols-outlined">edit</i>
       </button>
       <button class="action-btn delete-btn" (click)="onDelete($event)" title="Apagar Jogo">
         <i class="material-symbols-outlined">delete</i>
       </button>
     </div>
+  </div>
 
-    <div class="card-body">
-      <span class="status-badge">{{ game.status }}</span>
-      <h3 class="game-title">{{ game.title }}</h3>
+  <!-- A SECÇÃO DE INFORMAÇÕES -->
+  <div class="card-info">
+    <h3 class="game-title">{{ game.title }}</h3>
 
-      <div class="info-grid">
-        @if (game.playtime) {
-          <div class="info-item">
-            <span class="info-label">Tempo</span>
-            <span class="info-value">{{ game.playtime }}</span>
-          </div>
-        }
-        @if (game.platforms.length) {
-          <div class="info-item">
-            <span class="info-label">Plataforma</span>
-            <span class="info-value">{{ game.platforms.join(', ') }}</span>
-          </div>
+    <!-- Progresso das Conquistas -->
+    @if (game.achievementsTotal && game.achievementsTotal > 0) {
+      <div class="progress-section">
+        <div class="progress-text">
+          <span>Progresso</span>
+          <span>{{ achievementProgress.toFixed(0) }}%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-bar-fill" [style.width.%]="achievementProgress"></div>
+        </div>
+      </div>
+    }
+
+    <!-- Secção de DLCs Restaurada -->
+    <div class="dlc-section">
+      <span class="section-title">DLCs Disponíveis</span>
+      <div class="dlc-tags">
+        @if(dlcs$ | async; as dlcs) {
+          @if(dlcs.length > 0) {
+            @for(dlc of dlcs; track dlc.id) {
+              <span class="dlc-tag">{{ dlc.title }}</span>
+            }
+          } @else {
+            <span class="no-dlc-text">Nenhuma</span>
+          }
         }
       </div>
-
-      <!-- NOVA SECÇÃO PARA A BARRA DE PROGRESSO DE CONQUISTAS -->
-      @if (game.achievementsTotal && game.achievementsTotal > 0) {
-        <div class="achievements-section">
-          <p class="achievements-text">
-            {{ game.achievementsGotten }} / {{ game.achievementsTotal }} conquistas
-          </p>
-          <div class="progress-bar">
-            <div class="progress-bar-fill" [style.width.%]="achievementProgress"></div>
-          </div>
-        </div>
-      }
     </div>
 
-    <footer class="card-footer">
-      @if (game.genres.length) {
-        <div class="genre-tags">
-          @for(genre of game.genres; track genre) {
-            <span class="genre-tag">{{ genre }}</span>
-          }
-        </div>
-      }
-      <div class="trophy-icons">
-        @if (game.isPlatinado) {
-          <i class="material-symbols-outlined active" title="Platinado">military_tech</i>
-        }
-        @if (game.willPlatinar) {
-          <i class="material-symbols-outlined" title="Vou Platinar">adjust</i>
+    <!-- Rodapé com Géneros e Tempo de Jogo -->
+    <footer class="info-footer">
+      <div class="genre-tags">
+        @for(genre of game.genres; track genre) {
+          <span class="genre-tag">{{ genre }}</span>
         }
       </div>
+      @if (game.playtime) {
+        <div class="playtime">
+          <i class="material-symbols-outlined">timer</i>
+          <span>{{ game.playtime }}</span>
+        </div>
+      }
     </footer>
   </div>
 </div>
