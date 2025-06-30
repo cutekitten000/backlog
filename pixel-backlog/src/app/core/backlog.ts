@@ -31,16 +31,39 @@ export class Backlog {
 
   private games = signal<UserGame[]>([]);
   public filter = signal<FilterStatus>('Jogando');
+  // NOVO: Sinal para guardar o termo da busca
+  public searchTerm = signal<string>('');
 
   public filteredGames = computed(() => {
-    const games = this.games().sort((a, b) => b.addedAt.toMillis() - a.addedAt.toMillis());
+    const allGames = this.games().sort((a, b) => b.addedAt.toMillis() - a.addedAt.toMillis());
     const currentFilter = this.filter();
+    const term = this.searchTerm().toLowerCase();
+
+    // 1. Aplica o filtro de status primeiro
+    let gamesFilteredByStatus: UserGame[];
     switch (currentFilter) {
-      case 'Todos': return games;
-      case 'Platinado': return games.filter(g => g.isPlatinado);
-      case 'Vou platinar': return games.filter(g => g.willPlatinar && !g.isPlatinado);
-      default: return games.filter(g => g.status === currentFilter);
+      case 'Todos':
+        gamesFilteredByStatus = allGames;
+        break;
+      case 'Platinado':
+        gamesFilteredByStatus = allGames.filter(g => g.isPlatinado);
+        break;
+      case 'Vou platinar':
+        gamesFilteredByStatus = allGames.filter(g => g.willPlatinar && !g.isPlatinado);
+        break;
+      default:
+        gamesFilteredByStatus = allGames.filter(g => g.status === currentFilter);
     }
+
+    // 2. Se não houver termo de busca, retorna a lista já filtrada por status
+    if (!term) {
+      return gamesFilteredByStatus;
+    }
+
+    // 3. Se houver, aplica o filtro de busca sobre o resultado anterior
+    return gamesFilteredByStatus.filter(game =>
+      game.title.toLowerCase().includes(term)
+    );
   });
 
   constructor() {

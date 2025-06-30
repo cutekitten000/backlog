@@ -1,3 +1,5 @@
+// src/app/features/dashboard/dashboard.ts
+
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { trigger, transition, query, style, stagger, animate } from '@angular/animations';
@@ -34,7 +36,6 @@ export class Dashboard {
   protected backlogService = inject(Backlog);
 
   public isAddDialogOpen = false;
-  // CORREÇÃO: Usamos 'undefined' para compatibilidade de tipos
   public gameBeingEdited: UserGame | undefined;
   public isDetailsOpen = false;
   public selectedGameForDetails: UserGame | undefined;
@@ -50,6 +51,12 @@ export class Dashboard {
     'Vou platinar': 'adjust',
     'Todos': 'public'
   };
+
+  // NOVO: Método que atualiza o sinal de busca no serviço
+  onSearch(event: Event): void {
+    const term = (event.target as HTMLInputElement).value;
+    this.backlogService.searchTerm.set(term);
+  }
 
   openDetailsDialog(game: UserGame): void {
     this.selectedGameForDetails = game;

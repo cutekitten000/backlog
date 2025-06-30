@@ -1,10 +1,8 @@
-<!-- Diálogo para adicionar OU editar jogos -->
+<!-- src/app/features/dashboard/dashboard.html -->
+
 @if (isAddDialogOpen) {
-  <!-- CORREÇÃO: Adicionamos a ligação [gameToEdit] -->
   <app-add-game-dialog [gameToEdit]="gameBeingEdited" (close)="closeDialog()"></app-add-game-dialog>
 }
-
-<!-- NOVO: Diálogo para ver detalhes e DLCs -->
 @if (isDetailsOpen && selectedGameForDetails) {
   <app-game-details-dialog [game]="selectedGameForDetails" (close)="closeDetailsDialog()"></app-game-details-dialog>
 }
@@ -31,13 +29,23 @@
       }
     </section>
 
-    <section class="game-list-section">
-      <div class="add-button-container">
-        <button type="button" class="rune-btn" (click)="openAddDialog()">
-          + Adicionar Jogo
-        </button>
+    <!-- NOVO: Container para a busca e o botão de adicionar -->
+    <section class="actions-container">
+      <div class="search-wrapper">
+        <i class="material-symbols-outlined search-icon">search</i>
+        <input
+          class="search-input"
+          type="text"
+          placeholder="Buscar no seu backlog..."
+          (input)="onSearch($event)"
+        >
       </div>
+      <button type="button" class="rune-btn add-game-btn" (click)="openAddDialog()">
+        + Adicionar Jogo
+      </button>
+    </section>
 
+    <section class="game-list-section">
       <div class="game-list" [@listAnimation]="backlogService.filteredGames().length">
         @for (game of backlogService.filteredGames(); track game.id) {
           <app-game-card
@@ -48,8 +56,7 @@
           </app-game-card>
         } @empty {
           <div class="empty-state">
-            <p>O Milagre não respondeu.</p>
-            <p>Adicione um penitente para começar a sua jornada.</p>
+            <p>Nenhum jogo encontrado para os filtros atuais.</p>
           </div>
         }
       </div>
