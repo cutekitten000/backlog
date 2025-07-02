@@ -26,7 +26,7 @@ export class Api {
   private http = inject(HttpClient);
 
   // O URL DA SUA FUNÇÃO, JÁ INSERIDO CORRETAMENTE
-  private readonly FUNCTION_URL = 'https://getigdbtoken-biu8bm6pqa-uc.a.run.app';
+  private readonly FUNCTION_URL = 'https://us-central1-dan-backlog.cloudfunctions.net/getIgdbToken';
   // O proxy para a API da IGDB
   private readonly IGDB_API_URL = '/api/v4';
 

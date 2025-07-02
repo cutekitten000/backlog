@@ -1,15 +1,12 @@
 // functions/src/index.ts
 
-import {onRequest} from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
+import { onRequest } from "firebase-functions/v2/https";
 import * as https from "https";
 
-// Importa as funções para definir segredos
-import {defineString} from "firebase-functions/params";
-
 // Define as suas chaves secretas como variáveis de ambiente seguras
-const TWITCH_CLIENT_ID = defineString("TWITCH_CLIENT_ID");
-const TWITCH_CLIENT_SECRET = defineString("TWITCH_CLIENT_SECRET");
+const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID;
+const TWITCH_CLIENT_SECRET = process.env.TWITCH_CLIENT_SECRET;
 
 /**
  * Esta é uma "Callable Function". O nosso site Angular irá chamá-la
@@ -21,8 +18,8 @@ export const getIgdbToken = onRequest(
     // Inicia o processo de obtenção do token
     logger.info("Recebido pedido para obter token da IGDB/Twitch.");
 
-    const postData = `client_id=${TWITCH_CLIENT_ID.value()}` +
-      `&client_secret=${TWITCH_CLIENT_SECRET.value()}` +
+    const postData = `client_id=${TWITCH_CLIENT_ID}` +
+      `&client_secret=${TWITCH_CLIENT_SECRET}` +
       "&grant_type=client_credentials";
 
     const options = {
