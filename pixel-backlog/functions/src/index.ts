@@ -4,23 +4,23 @@ import * as logger from "firebase-functions/logger";
 import { onRequest } from "firebase-functions/v2/https";
 import * as https from "https";
 
-// Define as suas chaves secretas como variáveis de ambiente seguras
+// As chaves são carregadas automaticamente pelo Firebase a partir dos segredos que você definiu.
 const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID;
 const TWITCH_CLIENT_SECRET = process.env.TWITCH_CLIENT_SECRET;
 
-/**
- * Esta é uma "Callable Function". O nosso site Angular irá chamá-la
- * diretamente para obter um token de acesso da Twitch.
- */
 export const getIgdbToken = onRequest(
-  {cors: true}, // Permite que o seu site (mesmo em localhost) chame esta função
+  // A opção {cors: true} lida com as permissões do navegador.
+  { cors: true, secrets: ["TWITCH_CLIENT_ID", "TWITCH_CLIENT_SECRET"] },
   (request, response) => {
-    // Inicia o processo de obtenção do token
-    logger.info("Recebido pedido para obter token da IGDB/Twitch.");
+    logger.info("Iniciando requisição de token para a Twitch...", { structuredData: true });
 
-    const postData = `client_id=${TWITCH_CLIENT_ID}` +
-      `&client_secret=${TWITCH_CLIENT_SECRET}` +
-      "&grant_type=client_credentials";
+    if (!TWITCH_CLIENT_ID || !TWITCH_CLIENT_SECRET) {
+      logger.error("As variáveis de ambiente TWITCH_CLIENT_ID ou TWITCH_CLIENT_SECRET não foram encontradas.");
+      response.status(500).send({ error: "Configuração do servidor incompleta." });
+      return;
+    }
+
+    const postData = `client_id=${TWITCH_CLIENT_ID}&client_secret=${TWITCH_CLIENT_SECRET}&grant_type=client_credentials`;
 
     const options = {
       hostname: "id.twitch.tv",
@@ -39,19 +39,21 @@ export const getIgdbToken = onRequest(
       });
       res.on("end", () => {
         if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
-          logger.info("Token obtido com sucesso da Twitch.");
+          logger.info("Token da Twitch obtido com sucesso.");
           response.status(200).send(JSON.parse(data));
         } else {
-          logger.error("Erro da API da Twitch:", data);
-          response.status(res.statusCode || 500)
-            .send({error: "Falha ao obter o token da Twitch."});
+          logger.error("Erro recebido da API da Twitch:", {
+            statusCode: res.statusCode,
+            body: data,
+          });
+          response.status(res.statusCode || 500).send(data); // Envia a resposta de erro da Twitch diretamente
         }
       });
     });
 
     req.on("error", (e) => {
-      logger.error("Erro na requisição para a Twitch:", e);
-      response.status(500).send({error: "Erro de comunicação com a Twitch."});
+      logger.error("Erro na requisição HTTPS para a Twitch:", e);
+      response.status(500).send({ error: "Erro de comunicação com a Twitch." });
     });
 
     req.write(postData);

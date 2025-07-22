@@ -11,6 +11,6 @@ export const environment = {
   },
   twitch: {
     clientId: 'dfdqqc4se8iyv6o9bcsedz4nnykmfz',
-    clientSecret: 'v6emrpy25755sgewn7xmiveao48hs'
+    clientSecret: 'jjh855ep3k8w65h0zuor4epumo4hvg'
   }
 };
