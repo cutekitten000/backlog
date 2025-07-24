@@ -6,15 +6,13 @@ import { Observable, of } from 'rxjs';
 import { switchMap, map, shareReplay, first, catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
-// A nossa interface para os dados do jogo, adaptada para a IGDB
 export interface ApiGame {
   id: number;
   name: string;
-  background_image: string; // Manteremos o nome para compatibilidade
+  background_image: string;
   genres: { name: string }[];
 }
 
-// Interface para a resposta de autenticação da Twitch
 interface TwitchAuthResponse {
   access_token: string;
   expires_in: number;
@@ -25,9 +23,8 @@ interface TwitchAuthResponse {
 export class Api {
   private http = inject(HttpClient);
 
-  // O URL DA SUA FUNÇÃO, JÁ INSERIDO CORRETAMENTE
+  // ATENÇÃO: SUBSTITUA PELO URL DA SUA FUNÇÃO
   private readonly FUNCTION_URL = 'https://us-central1-dan-backlog.cloudfunctions.net/getIgdbToken';
-  // O proxy para a API da IGDB
   private readonly IGDB_API_URL = '/api/v4';
 
   private authToken$: Observable<string>;
@@ -38,7 +35,7 @@ export class Api {
     );
   }
 
-  // Este método agora chama a sua Firebase Function
+  // ESTE MÉTODO AGORA CHAMA A NOSSA FIREBASE FUNCTION
   private getAuthToken(): Observable<string> {
     if (!this.FUNCTION_URL.startsWith('https')) {
       console.error('URL da Firebase Function não configurado no api.ts');
@@ -54,7 +51,7 @@ export class Api {
     );
   }
 
-  // Busca jogos na API da IGDB
+  // O resto do serviço continua igual, mas agora usará o token obtido pela função
   searchGames(query: string, platforms?: string): Observable<{ results: ApiGame[] }> {
     if (!query.trim()) {
       return of({ results: [] });
@@ -91,7 +88,6 @@ export class Api {
     );
   }
 
-  // Busca as DLCs (expansões) de um jogo na IGDB
   getDlcsForGame(gameId: number): Observable<{ results: ApiGame[] }> {
     return this.authToken$.pipe(
       first(),
@@ -124,7 +120,6 @@ export class Api {
     );
   }
 
-  // Função auxiliar para mapear a resposta da IGDB para a nossa interface
   private mapIgdbResponseToApiGame(response: any[]): { results: ApiGame[] } {
     const mappedResults = response.map(game => ({
       id: game.id,

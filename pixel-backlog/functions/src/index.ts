@@ -1,26 +1,32 @@
 // functions/src/index.ts
 
+import {onRequest} from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
-import { onRequest } from "firebase-functions/v2/https";
 import * as https from "https";
+import {config} from "firebase-functions";
 
-// As chaves são carregadas automaticamente pelo Firebase a partir dos segredos que você definiu.
-const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID;
-const TWITCH_CLIENT_SECRET = process.env.TWITCH_CLIENT_SECRET;
-
+/**
+ * Esta é uma "onRequest Function". O nosso site Angular irá chamá-la
+ * para obter um token de acesso da Twitch.
+ */
 export const getIgdbToken = onRequest(
-  // A opção {cors: true} lida com as permissões do navegador.
-  { cors: true, secrets: ["TWITCH_CLIENT_ID", "TWITCH_CLIENT_SECRET"] },
+  {cors: true}, // Permite que o seu site chame esta função
   (request, response) => {
-    logger.info("Iniciando requisição de token para a Twitch...", { structuredData: true });
+    logger.info("Recebido pedido para obter token da IGDB/Twitch.");
 
-    if (!TWITCH_CLIENT_ID || !TWITCH_CLIENT_SECRET) {
-      logger.error("As variáveis de ambiente TWITCH_CLIENT_ID ou TWITCH_CLIENT_SECRET não foram encontradas.");
-      response.status(500).send({ error: "Configuração do servidor incompleta." });
+    // LÊ AS CHAVES DIRETAMENTE DAS VARIÁVEIS DE AMBIENTE DA FUNÇÃO
+    const clientId = config().twitch.client_id;
+    const clientSecret = config().twitch.client_secret;
+
+    if (!clientId || !clientSecret) {
+      logger.error("Client ID ou Client Secret não configurados na função.");
+      response.status(500).send({error: "Configuração interna do servidor em falta."});
       return;
     }
 
-    const postData = `client_id=${TWITCH_CLIENT_ID}&client_secret=${TWITCH_CLIENT_SECRET}&grant_type=client_credentials`;
+    const postData = `client_id=${clientId}` +
+      `&client_secret=${clientSecret}` +
+      "&grant_type=client_credentials";
 
     const options = {
       hostname: "id.twitch.tv",
@@ -39,21 +45,19 @@ export const getIgdbToken = onRequest(
       });
       res.on("end", () => {
         if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
-          logger.info("Token da Twitch obtido com sucesso.");
+          logger.info("Token obtido com sucesso da Twitch.");
           response.status(200).send(JSON.parse(data));
         } else {
-          logger.error("Erro recebido da API da Twitch:", {
-            statusCode: res.statusCode,
-            body: data,
-          });
-          response.status(res.statusCode || 500).send(data); // Envia a resposta de erro da Twitch diretamente
+          logger.error("Erro da API da Twitch:", data);
+          response.status(res.statusCode || 500)
+            .send({error: "Falha ao obter o token da Twitch."});
         }
       });
     });
 
     req.on("error", (e) => {
-      logger.error("Erro na requisição HTTPS para a Twitch:", e);
-      response.status(500).send({ error: "Erro de comunicação com a Twitch." });
+      logger.error("Erro na requisição para a Twitch:", e);
+      response.status(500).send({error: "Erro de comunicação com a Twitch."});
     });
 
     req.write(postData);
