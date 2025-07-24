@@ -3,23 +3,28 @@
 import {onRequest} from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import * as https from "https";
-import {config} from "firebase-functions";
+
+// NÃO usamos mais o defineString
 
 /**
  * Esta é uma "onRequest Function". O nosso site Angular irá chamá-la
  * para obter um token de acesso da Twitch.
  */
 export const getIgdbToken = onRequest(
-  {cors: true}, // Permite que o seu site chame esta função
+  // AQUI ESTÁ A MUDANÇA: Declaramos os segredos de que a função precisa
+  {
+    cors: true,
+    secrets: ["TWITCH_CLIENT_ID", "TWITCH_CLIENT_SECRET"],
+  },
   (request, response) => {
     logger.info("Recebido pedido para obter token da IGDB/Twitch.");
 
-    // LÊ AS CHAVES DIRETAMENTE DAS VARIÁVEIS DE AMBIENTE DA FUNÇÃO
-    const clientId = config().twitch.client_id;
-    const clientSecret = config().twitch.client_secret;
+    // As chaves agora são acedidas através de process.env
+    const clientId = process.env.TWITCH_CLIENT_ID;
+    const clientSecret = process.env.TWITCH_CLIENT_SECRET;
 
     if (!clientId || !clientSecret) {
-      logger.error("Client ID ou Client Secret não configurados na função.");
+      logger.error("Client ID ou Client Secret não encontrados no ambiente da função.");
       response.status(500).send({error: "Configuração interna do servidor em falta."});
       return;
     }
@@ -48,7 +53,7 @@ export const getIgdbToken = onRequest(
           logger.info("Token obtido com sucesso da Twitch.");
           response.status(200).send(JSON.parse(data));
         } else {
-          logger.error("Erro da API da Twitch:", data);
+          logger.error("Erro da API da Twitch:", data, res.statusCode);
           response.status(res.statusCode || 500)
             .send({error: "Falha ao obter o token da Twitch."});
         }
