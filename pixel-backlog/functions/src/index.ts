@@ -1,71 +1,53 @@
-// functions/src/index.ts
+// Copie e cole este conteúdo em: functions/src/index.ts
 
 import {onRequest} from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
-import * as https from "https";
+import axios from "axios";
 
-// NÃO usamos mais o defineString
-
-/**
- * Esta é uma "onRequest Function". O nosso site Angular irá chamá-la
- * para obter um token de acesso da Twitch.
- */
-export const getIgdbToken = onRequest(
-  // AQUI ESTÁ A MUDANÇA: Declaramos os segredos de que a função precisa
+// Esta única função irá lidar com todas as chamadas para a nossa API
+export const api = onRequest(
   {
-    cors: true,
+    cors: true, // Habilita o CORS para o desenvolvimento local
     secrets: ["TWITCH_CLIENT_ID", "TWITCH_CLIENT_SECRET"],
   },
-  (request, response) => {
-    logger.info("Recebido pedido para obter token da IGDB/Twitch.");
-
-    // As chaves agora são acedidas através de process.env
+  async (request, response) => {
     const clientId = process.env.TWITCH_CLIENT_ID;
     const clientSecret = process.env.TWITCH_CLIENT_SECRET;
 
     if (!clientId || !clientSecret) {
-      logger.error("Client ID ou Client Secret não encontrados no ambiente da função.");
-      response.status(500).send({error: "Configuração interna do servidor em falta."});
+      logger.error("As credenciais da Twitch (secrets) não estão configuradas.");
+      response.status(500).json({error: "Erro de configuração no servidor."});
       return;
     }
 
-    const postData = `client_id=${clientId}` +
-      `&client_secret=${clientSecret}` +
-      "&grant_type=client_credentials";
+    try {
+      // 1. Obter o token de acesso da Twitch
+      const authUrl = "https://id.twitch.tv/oauth2/token";
+      const authResponse = await axios.post(authUrl, new URLSearchParams({
+        client_id: clientId,
+        client_secret: clientSecret,
+        grant_type: "client_credentials",
+      }));
+      const accessToken = authResponse.data.access_token;
+      logger.info("Token da Twitch obtido com sucesso.");
 
-    const options = {
-      hostname: "id.twitch.tv",
-      path: "/oauth2/token",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Content-Length": Buffer.byteLength(postData),
-      },
-    };
+      // 2. Repassar a requisição original do Angular para a API da IGDB
+      const igdbUrl = `https://api.igdb.com${request.path.replace("/api", "")}`;
 
-    const req = https.request(options, (res) => {
-      let data = "";
-      res.on("data", (chunk) => {
-        data += chunk;
+      const igdbResponse = await axios.post(igdbUrl, request.body, {
+        headers: {
+          "Client-ID": clientId,
+          "Authorization": `Bearer ${accessToken}`,
+          "Content-Type": "text/plain",
+          "Accept": "application/json",
+        },
       });
-      res.on("end", () => {
-        if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
-          logger.info("Token obtido com sucesso da Twitch.");
-          response.status(200).send(JSON.parse(data));
-        } else {
-          logger.error("Erro da API da Twitch:", data, res.statusCode);
-          response.status(res.statusCode || 500)
-            .send({error: "Falha ao obter o token da Twitch."});
-        }
-      });
-    });
 
-    req.on("error", (e) => {
-      logger.error("Erro na requisição para a Twitch:", e);
-      response.status(500).send({error: "Erro de comunicação com a Twitch."});
-    });
-
-    req.write(postData);
-    req.end();
+      // 3. Enviar a resposta da IGDB de volta para o Angular
+      response.status(200).json(igdbResponse.data);
+    } catch (error) {
+      logger.error("Ocorreu um erro no proxy da API:", error);
+      response.status(500).json({error: "Falha ao comunicar com a API da IGDB."});
+    }
   }
 );
