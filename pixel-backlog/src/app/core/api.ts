@@ -30,7 +30,6 @@ export class Api {
       search "${query}";
       fields name, cover.url, genres.name;
       limit 15;
-      where version_parent = null & category = 0;
     `;
     if (platforms) {
       body += ` & platforms = (${platforms});`;
