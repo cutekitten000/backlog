@@ -1,53 +1,49 @@
-<!-- src/app/shared/game-details-dialog/game-details-dialog.html -->
-
-<div class="dialog-overlay" (click)="close.emit()">
-  <div class="dialog-panel tome-panel" (click)="$event.stopPropagation()">
-    <button class="close-btn" (click)="close.emit()">
+<div class="modal-overlay" (click)="close.emit()">
+  <div class="modal-panel" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="close.emit()" title="Fechar">
       <i class="material-symbols-outlined">close</i>
     </button>
 
-    <header class="tome-header">
-      <img [src]="game.coverUrl" alt="Capa de {{game.title}}" onerror="this.style.display='none'">
-      <h1>{{ game.title }}</h1>
-    </header>
+    <div class="artwork-column">
+      <img [src]="game.coverUrl" alt="Capa de {{game.title}}" class="artwork-image">
+    </div>
 
-    <div class="tome-content">
-      <h2>Crónicas da Jornada (DLCs)</h2>
+    <div class="details-column">
+      <h1 class="game-title">{{ game.title }}</h1>
+      <h2 class="section-title">Crônicas da Jornada (DLCs)</h2>
 
       <div class="dlc-list">
         @if (dlcs$ | async; as dlcs) {
           @for (dlc of dlcs; track dlc.id) {
             <div class="dlc-item">
               <span class="dlc-title">{{ dlc.title }}</span>
-              <!-- MUDANÇA PRINCIPAL: O span estático é substituído por este select -->
-              <select
-                class="dlc-status-select"
-                [ngModel]="dlc.status"
-                (ngModelChange)="onDlcStatusChange($event, dlc)">
-                @for (status of statuses; track status) {
-                  <option [value]="status">{{ status }}</option>
-                }
-              </select>
-              <button class="delete-dlc-btn" (click)="deleteDlc(dlc.id)" title="Apagar Crónica">
-                <i class="material-symbols-outlined">delete</i>
-              </button>
+              <div class="dlc-controls">
+                <select class="dlc-status-select" [ngModel]="dlc.status" (ngModelChange)="onDlcStatusChange($event, dlc)">
+                  @for (status of statuses; track status) {
+                    <option [value]="status">{{ status }}</option>
+                  }
+                </select>
+                <button class="delete-dlc-btn" (click)="deleteDlc(dlc.id)" title="Apagar Crônica">
+                  <i class="material-symbols-outlined">delete</i>
+                </button>
+              </div>
             </div>
           }
           @if (dlcs.length === 0 && !isAddingDlc) {
-            <p class="status-text">Nenhuma crónica foi registada para esta jornada.</p>
+            <p class="empty-list-text">Nenhuma crônica registrada.</p>
           }
         }
       </div>
 
-      <div class="add-dlc-section">
+      <div class="add-dlc-area">
         @if (isAddingDlc) {
           <div class="add-dlc-form">
             @if(isFetchingDlcs) {
-              <p class="status-text">Procurando crónicas perdidas...</p>
+              <p class="loading-text">Buscando...</p>
             } @else {
               @if (availableDlcs.length > 0) {
                 <form [formGroup]="dlcForm" (ngSubmit)="submitSelectedDlcs()">
-                  <p class="form-title">Selecione as crónicas a adicionar:</p>
+                  <p class="form-title">Selecione as crônicas:</p>
                   <div class="available-dlc-list" formArrayName="dlcs">
                     @for(dlc of availableDlcs; track dlc.id; let i = $index) {
                       <label class="checkbox-label">
@@ -58,18 +54,21 @@
                     }
                   </div>
                   <div class="form-actions">
-                    <button type="submit" class="add-btn">Confirmar</button>
-                    <button type="button" class="cancel-btn" (click)="cancelAddDlc()">Cancelar</button>
+                    <button type="submit" class="action-btn submit-btn">Confirmar</button>
+                    <button type="button" class="action-btn cancel-btn" (click)="cancelAddDlc()">Cancelar</button>
                   </div>
                 </form>
               } @else {
-                <p class="status-text">Nenhuma crónica nova foi encontrada.</p>
-                <button type="button" class="cancel-btn" (click)="cancelAddDlc()">Voltar</button>
+                <p class="empty-list-text">Nenhuma crônica nova encontrada.</p>
+                <button type="button" class="action-btn cancel-btn" (click)="cancelAddDlc()">Voltar</button>
               }
             }
           </div>
         } @else {
-          <button class="rune-btn" (click)="showDlcSelection()">+ Adicionar DLC</button>
+          <button class="action-btn add-dlc-btn" (click)="showDlcSelection()">
+            <i class="material-symbols-outlined">add</i>
+            <span>Adicionar Crônica</span>
+          </button>
         }
       </div>
     </div>

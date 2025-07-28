@@ -2,132 +2,134 @@
 @import '../../../styles.scss';
 
 .dashboard-container {
-  max-width: 1800px;
-  margin: 0 auto;
-  padding: 2rem 2.5rem;
+  padding: 0 2.5rem 2rem 2.5rem;
   animation: fadeIn 0.5s ease-out;
 }
 
-.dashboard-header {
+.main-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 2rem;
+  padding: 1rem 0;
   margin-bottom: 2.5rem;
-  padding-bottom: 1.5rem;
   border-bottom: 1px solid var(--border);
 }
 
-.title {
-  font-family: 'Press Start 2P', cursive; // A nova fonte pixelada
-  font-size: 1.75rem;
-  color: var(--text-primary);
-  margin: 0;
-}
-
+// BOTÃO DE LOGOUT COM ESTILO PARA O GIF
 .logout-btn {
   background: transparent;
   border: 1px solid var(--border);
-  color: var(--text-secondary);
-  padding: 0.6rem 1.2rem;
-  border-radius: 0;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  font-weight: 500;
-  font-family: 'Roboto', sans-serif;
   transition: all 0.2s ease;
+  flex-shrink: 0;
+  padding: 0; // Removemos o padding para a imagem preencher
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; // Garante que o GIF preencha o círculo
+    border-radius: 50%; // Deixa a imagem redonda
+    display: block;
+  }
+
   &:hover {
-    background: var(--surface);
-    color: var(--primary);
     border-color: var(--primary);
   }
 }
 
-.controls-toolbar {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-bottom: 2.5rem;
-}
-
+// FILTROS DE STATUS
 .status-filters {
   display: flex;
+  justify-content: center;
+  flex-grow: 1;
   flex-wrap: wrap;
   gap: 0.8rem;
+
   .filter-btn {
     background: transparent;
-    border: 1px solid var(--border);
+    border: 1px solid transparent;
     color: var(--text-secondary);
-    padding: 0.5rem 1.2rem;
-    border-radius: 0;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
     font-size: 0.9rem;
     font-family: 'Roboto', sans-serif;
     cursor: pointer;
     transition: all 0.2s ease;
     &.is-active {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary-hover);
+      background: var(--surface);
+      color: var(--primary);
+      font-weight: 500;
     }
     &:hover:not(.is-active) {
+      background: var(--surface);
       color: var(--text-primary);
-      border-color: var(--text-primary);
     }
   }
 }
 
+// AÇÕES
 .actions-group {
   display: flex;
   gap: 1rem;
-  align-items: stretch;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
 }
+
 .search-wrapper {
   position: relative;
-  flex-grow: 1;
   display: flex;
-}
+  align-items: center;
 
-.search-wrapper i {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-secondary);
-}
+  i {
+    position: absolute;
+    left: 0.75rem;
+    color: var(--text-secondary);
+    pointer-events: none;
+  }
 
-.search-wrapper input {
-  width: 100%;
-  padding: 0.8rem 1rem 0.8rem 3rem;
-  background-color: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 0;
-  color: var(--text-primary);
-  font-size: 1rem;
-  font-family: 'Roboto', sans-serif;
-  transition: all 0.2s ease;
-  &:focus {
-    outline: none;
-    border-color: var(--primary);
+  input {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem 0.6rem 2.5rem;
+    width: 200px;
+    transition: all 0.2s ease;
+    &:focus {
+      outline: none;
+      border-color: var(--primary);
+      width: 250px;
+    }
   }
 }
 
 .add-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0 1.5rem;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
   background-color: var(--primary);
   color: white;
-  border: 1px solid var(--primary-hover);
-  border-radius: 0;
-  font-size: 1rem;
-  font-weight: 700;
+  border: none;
+  border-radius: 50%;
   cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
+  transition: background-color 0.2s ease;
   &:hover {
     background-color: var(--primary-hover);
   }
 }
 
+// GRID DE JOGOS
 .games-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -140,4 +142,9 @@
   padding: 4rem;
   color: var(--text-secondary);
   font-size: 1.1rem;
+}
+
+// RESET DE ESTILOS ANTIGOS
+.dashboard-header, .controls-toolbar {
+  all: unset;
 }
