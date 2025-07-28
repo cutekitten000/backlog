@@ -6,6 +6,10 @@
     "pathRewrite": {
       "^/api": ""
     },
+    "headers": {
+      "Client-ID": "dfdqqc4se8iyv6o9bcsedz4nnykmfz",
+      "Authorization": "Bearer pomn7ct8wz6xem3owgs1k61ht0608t"
+    },
     "logLevel": "debug"
   }
 }
