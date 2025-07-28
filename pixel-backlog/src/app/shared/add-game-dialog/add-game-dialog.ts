@@ -42,7 +42,7 @@ export class AddGameDialog implements OnInit {
   public isEditMode = false;
 
   public availableDlcs$: Observable<ApiGame[]> | null = null;
-  private currentAvailableDlcs: ApiGame[] = [];
+  public currentAvailableDlcs: ApiGame[] = [];
 
   // PROPRIEDADE RESTAURADA: Esta propriedade é necessária para o seu HTML
   public isFetchingDlcs = false;
