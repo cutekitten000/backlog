@@ -1,23 +1,16 @@
-<!-- src/app/shared/game-card/game-card.html -->
-
-<div class="gallery-card" (click)="details.emit()">
-  <!-- A IMAGEM COMO PROTAGONISTA -->
+<div class="game-card" (click)="details.emit()">
   <div class="card-artwork">
-    <img [src]="game.coverUrl" alt="Capa de {{game.title}}" class="card-image" onerror="this.style.display='none'">
-    
-    <!-- Emblemas sobrepostos -->
-    <div class="artwork-badges">
-      <div class="top-badges">
-        @if (game.isPlatinado) {
-          <span class="badge platinum conquered"><i class="material-symbols-outlined">workspace_premium</i> Platina</span>
-        } @else if (game.willPlatinar) {
-          <span class="badge platinum planned"><i class="material-symbols-outlined">workspace_premium</i> Planejada</span>
-        }
-      </div>
-      <span class="badge status" [ngClass]="game.status.toLowerCase().replace(' ', '-')">{{ game.status }}</span>
-    </div>
+    <img [src]="game.coverUrl" alt="Capa de {{game.title}}" class="artwork-image">
+    <div class="artwork-overlay"></div>
 
-    <!-- Botões de Ação -->
+    @if(game.isPlatinado) {
+      <span class="platinum-badge conquered"><i class="material-symbols-outlined">workspace_premium</i></span>
+    } @else if (game.willPlatinar) {
+      <span class="platinum-badge planned"><i class="material-symbols-outlined">workspace_premium</i></span>
+    }
+
+    <span class="status-badge" [ngClass]="game.status.toLowerCase().replace(' ', '-')">{{ game.status }}</span>
+
     <div class="card-actions">
       <button class="action-btn" (click)="edit.emit(); $event.stopPropagation()" title="Editar Jogo">
         <i class="material-symbols-outlined">edit</i>
@@ -28,53 +21,29 @@
     </div>
   </div>
 
-  <!-- A SECÇÃO DE INFORMAÇÕES -->
   <div class="card-info">
     <h3 class="game-title">{{ game.title }}</h3>
 
-    <!-- Progresso das Conquistas -->
-    @if (game.achievementsTotal && game.achievementsTotal > 0) {
-      <div class="progress-section">
-        <div class="progress-text">
-          <span>Progresso</span>
-          <span>{{ achievementProgress.toFixed(0) }}%</span>
-        </div>
-        <div class="progress-bar">
-          <div class="progress-bar-fill" [style.width.%]="achievementProgress"></div>
-        </div>
-      </div>
-    }
-
-    <!-- Secção de DLCs -->
-    <div class="dlc-section">
-      <span class="section-title">DLCs</span>
-      <div class="dlc-tags">
-        @if(dlcs$ | async; as dlcs) {
-          @if(dlcs.length > 0) {
-            @for(dlc of dlcs; track dlc.id) {
-              <!-- AQUI ESTÁ A MUDANÇA: Adicionamos o [ngClass] -->
-              <span class="dlc-tag" [ngClass]="dlc.status.toLowerCase().replace(' ', '-')">{{ dlc.title }}</span>
-            }
-          } @else {
-            <span class="no-dlc-text">Nenhuma</span>
-          }
-        }
-      </div>
-    </div>
-
-    <!-- Rodapé com Géneros e Tempo de Jogo -->
-    <footer class="info-footer">
-      <div class="genre-tags">
-        @for(genre of game.genres; track genre) {
-          <span class="genre-tag">{{ genre }}</span>
-        }
+    <div class="meta-info">
+      <div class="info-item">
+        <i class="material-symbols-outlined">extension</i>
+        <span>{{ (dlcs$ | async)?.length || 0 }} DLCs</span>
       </div>
       @if (game.playtime) {
-        <div class="playtime">
+        <div class="info-item">
           <i class="material-symbols-outlined">timer</i>
           <span>{{ game.playtime }}</span>
         </div>
       }
-    </footer>
+    </div>
+
+    @if (game.achievementsTotal && game.achievementsTotal > 0) {
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="achievementProgress"></div>
+        </div>
+        <span class="progress-percentage">{{ achievementProgress.toFixed(0) }}%</span>
+      </div>
+    }
   </div>
 </div>

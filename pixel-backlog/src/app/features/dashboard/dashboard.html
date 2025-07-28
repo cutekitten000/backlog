@@ -1,5 +1,3 @@
-<!-- src/app/features/dashboard/dashboard.html -->
-
 @if (isAddDialogOpen) {
   <app-add-game-dialog [gameToEdit]="gameBeingEdited" (close)="closeDialog()"></app-add-game-dialog>
 }
@@ -7,59 +5,39 @@
   <app-game-details-dialog [game]="selectedGameForDetails" (close)="closeDetailsDialog()"></app-game-details-dialog>
 }
 
-<div class="sanctuary-container">
-  <header class="sanctuary-header">
+<div class="dashboard-container">
+  <header class="dashboard-header">
     <h1 class="title">Pixel Backlog</h1>
-    <button type="button" class="rune-btn" (click)="authService.logout()">
-      Partir
-    </button>
+    <button class="logout-btn" (click)="authService.logout()">Partir</button>
   </header>
 
   <main>
-    <section class="filters-container">
-      @for (filter of filterOptions; track filter) {
-        <button
-          type="button"
-          class="rune-btn"
-          [class.is-active]="backlogService.filter() === filter"
-          (click)="backlogService.filter.set(filter)">
-          <i class="material-symbols-outlined rune-icon">{{ getIconForStatus(filter) }}</i>
-          <span>{{ filter }}</span>
-        </button>
-      }
-    </section>
-
-    <!-- NOVO: Container para a busca e o botão de adicionar -->
-    <section class="actions-container">
-      <div class="search-wrapper">
-        <i class="material-symbols-outlined search-icon">search</i>
-        <input
-          class="search-input"
-          type="text"
-          placeholder="Buscar no seu backlog..."
-          (input)="onSearch($event)"
-        >
-      </div>
-      <button type="button" class="rune-btn add-game-btn" (click)="openAddDialog()">
-        + Adicionar Jogo
-      </button>
-    </section>
-
-    <section class="game-list-section">
-      <div class="game-list" [@listAnimation]="backlogService.filteredGames().length">
-        @for (game of backlogService.filteredGames(); track game.id) {
-          <app-game-card
-            [game]="game"
-            (delete)="onDeleteGame($event)"
-            (edit)="openEditDialog(game)"
-            (details)="openDetailsDialog(game)">
-          </app-game-card>
-        } @empty {
-          <div class="empty-state">
-            <p>Nenhum jogo encontrado para os filtros atuais.</p>
-          </div>
+    <div class="controls-toolbar">
+      <div class="status-filters">
+        @for (filter of filterOptions; track filter) {
+          <button class="filter-btn" [class.is-active]="backlogService.filter() === filter" (click)="backlogService.filter.set(filter)">
+            {{ filter }}
+          </button>
         }
       </div>
-    </section>
+      <div class="actions-group">
+        <div class="search-wrapper">
+          <i class="material-symbols-outlined">search</i>
+          <input type="text" placeholder="Buscar no seu backlog..." (input)="onSearch($event)">
+        </div>
+        <button class="add-btn" (click)="openAddDialog()">
+          <i class="material-symbols-outlined">add</i>
+          <span>Adicionar Jogo</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="games-grid" [@listAnimation]="backlogService.filteredGames().length">
+      @for (game of backlogService.filteredGames(); track game.id) {
+        <app-game-card [game]="game" (delete)="onDeleteGame($event)" (edit)="openEditDialog(game)" (details)="openDetailsDialog(game)"></app-game-card>
+      } @empty {
+        <p class="empty-state">Nenhum jogo encontrado para os filtros atuais.</p>
+      }
+    </div>
   </main>
 </div>
