@@ -1,17 +1,20 @@
 /* src/styles.scss */
 
-// Paleta de Cores e Tipografia Base
+// 1. Importa a nova fonte Pixel Art para os títulos
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;500&display=swap');
+
+// 2. A Paleta "The Miracle"
 :root {
-  --background: #111118;      // Fundo principal, um preto azulado
-  --surface: #1d1d2b;        // Cor de superfícies como cards e inputs
-  --primary: #7c4dff;         // Roxo vibrante para destaques e ações
-  --primary-hover: #6d28d9;  // Tom mais escuro para hover
-  --text-primary: #e5e7eb;   // Cor do texto principal, branco suave
-  --text-secondary: #9ca3af; // Cor do texto secundário, cinza claro
-  --border: #374151;         // Cor para bordas sutis
+  --background: #121212;      // Preto profundo e absoluto
+  --surface: #1e1e1e;          // Superfície de carvão para os cards
+  --primary: #b71c1c;         // Vermelho-sangue para destaque
+  --primary-hover: #d32f2f;  // Vermelho mais vivo no hover
+  --text-primary: #e0e0e0;   // Branco-osso para texto
+  --text-secondary: #757575; // Cinza-pedra para texto secundário
+  --border: #424242;         // Borda de metal escurecido
 }
 
-// Reset e Estilo do Body
+// 3. Estilo do Body com a nova identidade
 html, body {
   height: 100%;
   margin: 0;
@@ -21,29 +24,28 @@ body {
   font-family: 'Roboto', sans-serif;
   color: var(--text-primary);
   background-color: var(--background);
-  background-image: linear-gradient(rgba(17, 17, 24, 0.95), rgba(17, 17, 24, 1)), url('https://i.pinimg.com/originals/42/a4/5f/42a45f81c257479ae3536035a0097abb.gif');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+  // Adiciona uma textura de ruído sutil ao fundo
+  background-image: linear-gradient(rgba(18, 18, 18, 0.98), rgba(18, 18, 18, 1)),
+                    url('https://www.transparenttextures.com/patterns/noisy-grid.png');
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-// Estilo da Barra de Rolagem
+// 4. Estilo da Barra de Rolagem
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--primary) var(--surface);
 }
-*::-webkit-scrollbar { width: 10px; }
-*::-webkit-scrollbar-track { background: var(--surface); }
+*::-webkit-scrollbar { width: 12px; }
+*::-webkit-scrollbar-track { background: #000; }
 *::-webkit-scrollbar-thumb {
   background-color: var(--primary);
-  border-radius: 10px;
-  border: 2px solid var(--surface);
+  border-radius: 0;
+  border: 3px solid #000;
 }
 
 // Animação global
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
