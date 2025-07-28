@@ -1,7 +1,3 @@
-/* src/styles.scss */
-
-@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-
 /* A sua paleta de cores, mantida intacta */
 :root {
   --color-ui-bg: rgba(28, 28, 32, 0.65);
@@ -21,8 +17,10 @@ body {
 
   // A cor do texto principal é ajustada para garantir a legibilidade
   color: var(--color-text-faded);
-  font-family: 'VT323', monospace;
+  font-family: 'Roboto', sans-serif;
   font-size: 1.4rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   position: relative;
 
