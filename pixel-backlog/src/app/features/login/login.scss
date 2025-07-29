@@ -1,84 +1,80 @@
 /* src/app/features/login/login.scss */
+@import '../../../styles.scss';
 
 :host {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  // A animação global que já definimos em styles.scss
   animation: fadeIn 1s ease-out;
 }
 
 .login-panel {
-  width: 90%;
-  max-width: 450px;
-  padding: 3rem;
-
-  // O nosso efeito de painel etéreo
-  background: var(--color-ui-bg);
-  border: 1px solid var(--color-border);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  width: 100%;
+  max-width: 400px;
+  padding: 2.5rem;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 0 1px #000;
 }
 
-.panel-title {
-  font-size: 2.5rem;
+.title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 2rem;
   text-align: center;
-  margin-bottom: 3rem;
-  color: var(--color-text-faded);
-  letter-spacing: 4px;
-  text-shadow: 2px 2px 5px #000;
+  margin: 0 0 2.5rem 0;
+  color: var(--text-primary);
 }
 
-form {
+.login-form {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .form-field {
+  display: flex;
+  flex-direction: column;
+
   label {
-    display: block;
-    color: var(--color-text-muted);
+    color: var(--text-secondary);
     margin-bottom: 0.5rem;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
+    font-family: 'Roboto', sans-serif;
   }
 
   .form-input {
     width: 100%;
-    background: transparent;
-    border: 1px solid var(--color-border);
+    background: var(--background);
+    border: 1px solid var(--border);
     padding: 0.8rem;
-    font-family: inherit;
-    font-size: 1.3rem;
-    color: var(--color-text-faded);
-    transition: all 0.3s ease;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    color: var(--text-primary);
+    border-radius: 0;
+    transition: all 0.2s ease;
 
     &:focus {
       outline: none;
-      border-color: var(--color-grace-hover);
-      box-shadow: 0 0 10px 0px var(--color-grace-hover);
+      border-color: var(--primary);
     }
   }
 }
 
 .submit-btn {
-  // Estilo herdado do nosso rune-btn, mas com mais destaque
-  background: transparent;
-  color: var(--color-grace-hover);
-  border: 1px solid var(--color-grace-hover);
+  background: var(--primary);
+  color: white;
+  border: 1px solid var(--primary-hover);
   padding: 1rem;
   margin-top: 1rem;
-  font-family: inherit;
-  font-size: 1.3rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1rem;
+  border-radius: 0;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 
   &:hover {
-    color: #000;
-    background: var(--color-ember-active);
-    border-color: var(--color-ember-active);
-    box-shadow: 0 0 15px 0 var(--color-ember-active);
-    text-shadow: none;
+    background: var(--primary-hover);
+    border-color: var(--primary);
   }
 }
