@@ -62,11 +62,24 @@
     font-family: 'Roboto', sans-serif;
     cursor: pointer;
     transition: all 0.2s ease;
+    
+    // ✅ NOVO: Alinha o texto e o contador
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
     &.is-active {
       background: var(--surface);
       color: var(--primary);
       font-weight: 500;
+
+      // ✅ NOVO: Estilo do contador quando o filtro está ativo
+      .filter-count {
+        background-color: var(--primary);
+        color: white;
+      }
     }
+    
     &:hover:not(.is-active) {
       background: var(--surface);
       color: var(--text-primary);
@@ -147,4 +160,16 @@
 // RESET DE ESTILOS ANTIGOS
 .dashboard-header, .controls-toolbar {
   all: unset;
+}
+
+// Adicionar ao final do arquivo
+.filter-count {
+  background-color: var(--border);
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 10px; // Deixa a "pílula" arredondada
+  line-height: 1;
+  transition: all 0.2s ease;
 }

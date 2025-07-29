@@ -31,8 +31,38 @@ export class Backlog {
 
   private games = signal<UserGame[]>([]);
   public filter = signal<FilterStatus>('Jogando');
-  // NOVO: Sinal para guardar o termo da busca
   public searchTerm = signal<string>('');
+
+  // ✅ NOVO: Sinal computado para as contagens de cada status
+  public statusCounts = computed(() => {
+    const allGames = this.games();
+    // Inicia o contador para cada status
+    const counts: Record<FilterStatus, number> = {
+      'Jogando': 0,
+      'Em espera': 0,
+      'Zerado': 0,
+      'Dropado': 0,
+      'Platinado': 0,
+      'Vou platinar': 0,
+      'Todos': allGames.length // 'Todos' sempre será o total
+    };
+
+    // Itera sobre os jogos para contar cada status
+    for (const game of allGames) {
+      if (counts[game.status] !== undefined) {
+        counts[game.status]++;
+      }
+      // Lógica especial para 'Platinado' e 'Vou platinar'
+      if (game.isPlatinado) {
+        counts['Platinado']++;
+      }
+      if (game.willPlatinar && !game.isPlatinado) {
+        counts['Vou platinar']++;
+      }
+    }
+
+    return counts;
+  });
 
   public filteredGames = computed(() => {
     const allGames = this.games().sort((a, b) => b.addedAt.toMillis() - a.addedAt.toMillis());

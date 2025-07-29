@@ -15,6 +15,11 @@
       @for (filter of filterOptions; track filter) {
         <button class="filter-btn" [class.is-active]="backlogService.filter() === filter" (click)="backlogService.filter.set(filter)">
           {{ filter }}
+          @if (backlogService.statusCounts()[filter] > 0) {
+            <span class="filter-count">
+              {{ backlogService.statusCounts()[filter] }}
+            </span>
+          }
         </button>
       }
     </div>
